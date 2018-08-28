@@ -19,7 +19,8 @@ describe Mulang::PHP do
   describe '#parse' do
     let(:result) { convert_php_to_mulang ast }
 
-    context 'assignment' do
+    context 'assignment & expressions' do
+      context 'integers' do
         ###
         # $some_var = 2;
         ###
@@ -43,6 +44,33 @@ describe Mulang::PHP do
         } }
 
         it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2 )}
+      end
+
+      context 'floats' do
+        ###
+        # $some_var = 2.3;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_Assign",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "some_var"
+                },
+                "expr": {
+                  "nodeType": "Scalar_DNumber",
+                  "value": 2.3
+                }
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2.3 )}
+      end
     end
 
     # context 'simple module' do
