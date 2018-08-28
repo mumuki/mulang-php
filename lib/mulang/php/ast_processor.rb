@@ -41,6 +41,10 @@ module Mulang::PHP
       ms :MuNumber, node[:value]
     end
 
+    def on_Scalar_String(node)
+      ms :MuString, node[:value]
+    end
+
     # def on_class(node)
     #   name, superclass, body = *node
     #   body ||= s(:nil)

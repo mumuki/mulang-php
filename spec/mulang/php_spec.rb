@@ -1,13 +1,13 @@
 require "spec_helper"
 
-def try(catches, finally)
-  simple_method(:foo, [],
-    ms(:Try,
-      simple_send(
-        ms(:Self),
-        :bar,
-        []), catches, finally))
-end
+# def try(catches, finally)
+#   simple_method(:foo, [],
+#     ms(:Try,
+#       simple_send(
+#         ms(:Self),
+#         :bar,
+#         []), catches, finally))
+# end
 
 describe Mulang::PHP do
   include Mulang::PHP::Sexp
@@ -70,6 +70,32 @@ describe Mulang::PHP do
         } }
 
         it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2.3 )}
+      end
+
+      context 'strings' do
+        ###
+        # $some_var = "Hi, I'm a string.";
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_Assign",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "some_var"
+                },
+                "expr": {
+                  "nodeType": "Scalar_String",
+                  "value": "Hi, I'm a string."
+                }
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :Assignment, 'some_var',  ms(:MuString, "Hi, I'm a string.")}
       end
     end
 
