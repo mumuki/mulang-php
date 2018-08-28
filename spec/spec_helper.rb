@@ -11,8 +11,13 @@ RSpec.configure do |config|
   end
 end
 
+def convert_php_to_mulang(ast)
+  mulang_ast = Mulang::PHP.parse JSON.parse(ast, symbolize_names: true)
+  check_valid mulang_ast
+  mulang_ast
+end
+
 def check_valid(mulang_ast)
   out = Mulang::Code.new(Mulang::Language::External.new, mulang_ast).analyse smellsSet: { tag: "NoSmells" }, expectations: []
   expect(out['tag']).to eq 'AnalysisCompleted'
 end
-

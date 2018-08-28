@@ -6,8 +6,8 @@ require_relative "./php/version"
 
 module Mulang
   module PHP
-    def self.parse(php_code)
-      Mulang::PHP::AstProcessor.new.process Mulang::PHP::SexpParser.parser(php_code)
+    def self.parse(php_ast)
+      Mulang::PHP::AstProcessor.new.process_ast php_ast
     end
 
     def self.language
@@ -17,5 +17,4 @@ module Mulang
 end
 
 require_relative "./php/sexp"
-require_relative './php/sexp_parser'
 require_relative './php/ast_processor'
