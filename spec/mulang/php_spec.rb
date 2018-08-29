@@ -412,6 +412,17 @@ describe Mulang::PHP do
                                )
         }
       end
+
+      context 'lots of mixed operators' do
+        ###
+        # ((2 && true || false > 3 === 3) <= 2 ** 8 / 8 % 1 | "j") !== 2 and 9;
+        ###
+        let(:ast) { %q{
+          [{"nodeType":"Stmt_Expression","expr":{"nodeType":"Expr_BinaryOp_LogicalAnd","left":{"nodeType":"Expr_BinaryOp_NotIdentical","left":{"nodeType":"Expr_BinaryOp_BitwiseOr","left":{"nodeType":"Expr_BinaryOp_SmallerOrEqual","left":{"nodeType":"Expr_BinaryOp_BooleanOr","left":{"nodeType":"Expr_BinaryOp_BooleanAnd","left":{"nodeType":"Scalar_LNumber","value":2},"right":{"nodeType":"Expr_ConstFetch","name":{"nodeType":"Name","parts":["true"]}}},"right":{"nodeType":"Expr_BinaryOp_Identical","left":{"nodeType":"Expr_BinaryOp_Greater","left":{"nodeType":"Expr_ConstFetch","name":{"nodeType":"Name","parts":["false"]}},"right":{"nodeType":"Scalar_LNumber","value":3}},"right":{"nodeType":"Scalar_LNumber","value":3}}},"right":{"nodeType":"Expr_BinaryOp_Mod","left":{"nodeType":"Expr_BinaryOp_Div","left":{"nodeType":"Expr_BinaryOp_Pow","left":{"nodeType":"Scalar_LNumber","value":2},"right":{"nodeType":"Scalar_LNumber","value":8}},"right":{"nodeType":"Scalar_LNumber","value":8}},"right":{"nodeType":"Scalar_LNumber","value":1}}},"right":{"nodeType":"Scalar_String","value":"j"}},"right":{"nodeType":"Scalar_LNumber","value":2}},"right":{"nodeType":"Scalar_LNumber","value":9}}}]
+        } }
+
+        it { expect(result).to eq({:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"and"}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"!=="}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"|"}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"<="}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"||"}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"&&"}, [{:tag=>:MuNumber, :contents=>2}, {:tag=>:MuBool, :contents=>true}]]}, {:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"==="}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>">"}, [{:tag=>:MuBool, :contents=>false}, {:tag=>:MuNumber, :contents=>3}]]}, {:tag=>:MuNumber, :contents=>3}]]}]]}, {:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"%"}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"/"}, [{:tag=>:Application, :contents=>[{:tag=>:Reference, :contents=>"**"}, [{:tag=>:MuNumber, :contents=>2}, {:tag=>:MuNumber, :contents=>8}]]}, {:tag=>:MuNumber, :contents=>8}]]}, {:tag=>:MuNumber, :contents=>1}]]}]]}, {:tag=>:MuString, :contents=>"j"}]]}, {:tag=>:MuNumber, :contents=>2}]]}, {:tag=>:MuNumber, :contents=>9}]]}) }
+      end
     end
 
     context 'statements' do

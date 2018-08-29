@@ -33,7 +33,6 @@ module Mulang::PHP
         { token: '!==', name: 'NotIdentical', supports_assign?: false },
         { token: '+', name: 'Plus', supports_assign?: true },
         { token: '-', name: 'Minus', supports_assign?: true },
-        { token: '-', name: 'Minus', supports_assign?: true },
         { token: '*', name: 'Mul', supports_assign?: true },
         { token: '/', name: 'Div', supports_assign?: true },
         { token: '%', name: 'Mod', supports_assign?: true },
