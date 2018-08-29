@@ -19,32 +19,6 @@ describe Mulang::PHP do
   describe '#parse' do
     let(:result) { convert_php_to_mulang ast }
 
-    context 'assignment' do
-      ###
-      # $some_var = 2;
-      ###
-      let(:ast) { %q{
-          [
-            {
-              "nodeType": "Stmt_Expression",
-              "expr": {
-                "nodeType": "Expr_Assign",
-                "var": {
-                  "nodeType": "Expr_Variable",
-                  "name": "some_var"
-                },
-                "expr": {
-                  "nodeType": "Scalar_LNumber",
-                  "value": 2
-                }
-              }
-            }
-          ]
-        } }
-
-      it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2 )}
-    end
-
     context 'values' do
       context 'integer' do
         ###
@@ -104,28 +78,88 @@ describe Mulang::PHP do
       end
 
       context 'booleans' do
-        ###
-        # $some_var = true;
-        ###
-        let(:ast) { %q{
+        let(:ast) {
+          JSON.generate([
+            {
+              'nodeType': 'Stmt_Expression',
+              'expr': {
+                'nodeType': 'Expr_ConstFetch',
+                'name': {
+                  'nodeType': 'Name',
+                  'parts': [
+                    boolean
+                  ]
+                }
+              }
+            }
+          ])
+        }
+
+        context 'true' do
+          ###
+          # true;
+          ###
+          let(:boolean) { "true" }
+
+          it { expect(result).to eq ms :MuBool, true }
+        end
+
+        context 'false' do
+          ###
+          # false;
+          ###
+          let(:boolean) { "false" }
+
+          it { expect(result).to eq ms :MuBool, false }
+        end
+      end
+
+      context 'arrays' do
+        context 'empty array' do
+          ###
+          # [];
+          ###
+          let(:ast) { %q{
+            [
+              {
+                "nodeType": "Stmt_Expression",
+                "expr": {
+                  "nodeType": "Expr_Array",
+                  "items": []
+                }
+              }
+            ]
+           } }
+
+          it { expect(result).to eq ms :MuList, [] }
+        end
+      end
+    end
+
+    context 'assignment' do
+      ###
+      # $some_var = 2;
+      ###
+      let(:ast) { %q{
           [
             {
               "nodeType": "Stmt_Expression",
               "expr": {
-                "nodeType": "Expr_ConstFetch",
-                "name": {
-                  "nodeType": "Name",
-                  "parts": [
-                    "true"
-                  ]
+                "nodeType": "Expr_Assign",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "some_var"
+                },
+                "expr": {
+                  "nodeType": "Scalar_LNumber",
+                  "value": 2
                 }
               }
             }
           ]
         } }
 
-        it { expect(result).to eq ms :MuBool, true }
-      end
+      it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2 )}
     end
 
     # context 'simple module' do

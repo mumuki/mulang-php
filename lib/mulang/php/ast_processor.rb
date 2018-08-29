@@ -53,6 +53,14 @@ module Mulang::PHP
       end
     end
 
+    def on_Expr_Array(node)
+      ms :MuList, process(node[:items])
+    end
+
+    def on_Expr_ArrayItem(node)
+      process(node[:value])
+    end
+
     # def on_class(node)
     #   name, superclass, body = *node
     #   body ||= s(:nil)
