@@ -37,6 +37,7 @@ module Mulang::PHP
       [
         { token: '===', name: 'Identical', supports_assign?: false },
         { token: '!==', name: 'NotIdentical', supports_assign?: false },
+        { token: '.', name: 'Concat', supports_assign?: true },
         { token: '+', name: 'Plus', supports_assign?: true },
         { token: '-', name: 'Minus', supports_assign?: true },
         { token: '*', name: 'Mul', supports_assign?: true },

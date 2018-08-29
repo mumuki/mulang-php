@@ -409,6 +409,38 @@ describe Mulang::PHP do
         }
       end
 
+      context '+' do
+        ###
+        # "a"."b";
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_BinaryOp_Concat",
+                "left": {
+                  "nodeType": "Scalar_String",
+                  "value": "a"
+                },
+                "right": {
+                  "nodeType": "Scalar_String",
+                  "value": "b"
+                }
+              }
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :Application,
+                                   ms(:Reference, '.'),
+                                   [ms(:MuString, "a"), ms(:MuString, "b")]
+                               )
+        }
+      end
+
       context '++' do
         ###
         # $a++;
