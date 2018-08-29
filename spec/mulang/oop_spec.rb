@@ -77,30 +77,6 @@ describe Mulang::PHP do
     end
   end
 
-  #   context 'instance variables references' do
-  #     let(:code) { %q{@nigiri} }
-  #     it { expect(result).to eq ms :Reference, :@nigiri }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'instance variables assignment' do
-  #     let(:code) { %q{@wasabi = true} }
-  #     it { expect(result).to eq ms :Assignment, :@wasabi, ms(:MuBool, true) }
-  #     it { check_valid result }
-  #   end
-  #
-  #
-  #   context 'interpolations' do
-  #     let(:code) { %q{"foo #{@bar} - #{@baz}"} }
-  #     it { expect(result).to eq simple_send(ms(:MuList,
-  #                                   ms(:MuString, "foo "),
-  #                                   ms(:Reference, :@bar),
-  #                                   ms(:MuString, " - "),
-  #                                   ms(:Reference, :@baz)), :join, []) }
-  #     it { check_valid result }
-  #   end
-  #
-
   #   context 'message sends' do
   #     let(:code) { %q{
   #       a = 2
