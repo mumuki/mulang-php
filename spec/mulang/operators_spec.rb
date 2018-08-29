@@ -87,7 +87,7 @@ describe Mulang::PHP do
                                    :Application,
                                    ms(:Reference, '+'),
                                    [ms(:MuNumber, 2), ms(:MuNumber, 3)]
-                                 )
+                               )
         }
       end
 

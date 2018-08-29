@@ -49,7 +49,7 @@ module Mulang::PHP
     end
 
     def simple_send(sender, message, args)
-      ms(:Send, sender, {tag: :Reference, contents: message}, args)
+      ms(:Send, sender, ms(:Reference, message), args)
     end
   end
 end

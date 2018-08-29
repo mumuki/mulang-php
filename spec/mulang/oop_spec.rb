@@ -15,7 +15,33 @@ describe Mulang::PHP do
   describe '#parse' do
     let(:result) { convert_php_to_mulang ast }
 
-    # TODO: Hacer
+    context 'OOP' do
+      context 'property fetch' do
+        ###
+        # $this->nigiri;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_PropertyFetch",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "this"
+                },
+                "name": {
+                  "nodeType": "Identifier",
+                  "name": "nigiri"
+                }
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq simple_send(ms(:Reference, 'this'), 'nigiri', []) }
+      end
+    end
   end
 
   #   context 'instance variables references' do
