@@ -7,8 +7,8 @@ module Mulang::PHP
       define_binary_operators!
     end
 
-    def process_ast(ast)
-      process sequence(*ast)
+    def process_block(stmts)
+      sequence *process(stmts)
     end
 
     def process(node)
@@ -112,7 +112,7 @@ module Mulang::PHP
       is_array = items.all? { |it| it[:key].nil? }
 
       is_array ? ms(:MuList, process(items))
-               : ms(:MuObject, sequence(*process(items)))
+               : ms(:MuObject, process_block(items))
     end
 
     def on_Expr_ArrayItem(node)
@@ -141,7 +141,7 @@ module Mulang::PHP
     alias on_Expr_PreDec on_Expr_PostDec
 
     def on_Stmt_Echo(node)
-      ms :Print, sequence(*process(node[:exprs]))
+      ms :Print, process_block(node[:exprs])
     end
 
     def on_Stmt_If(node)
@@ -149,12 +149,12 @@ module Mulang::PHP
       body = node[:stmts]
       else_block = node[:else]
 
-      ms :If, process(condition), sequence(*process(body)), process(else_block)
+      ms :If, process(condition), process_block(body), process(else_block)
     end
     alias on_Stmt_ElseIf on_Stmt_If
 
-    def Stmt_Else(node)
-      sequence(*node[:stmts])
+    def on_Stmt_Else(node)
+      process_block node[:stmts]
     end
 
     # def on_if(node)

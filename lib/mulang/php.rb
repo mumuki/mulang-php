@@ -7,7 +7,7 @@ require_relative "./php/version"
 module Mulang
   module PHP
     def self.parse(php_ast)
-      Mulang::PHP::AstProcessor.new.process_ast php_ast
+      Mulang::PHP::AstProcessor.new.process_block php_ast
     end
 
     def self.language

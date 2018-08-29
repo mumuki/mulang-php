@@ -532,6 +532,64 @@ describe Mulang::PHP do
       end
     end
 
+    context 'if - else' do
+      ###
+      # if (true) { echo "asd"; } else { echo "qwe"; }
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_If",
+            "cond": {
+              "nodeType": "Expr_ConstFetch",
+              "name": {
+                "nodeType": "Name",
+                "parts": [
+                  "true"
+                ]
+              }
+            },
+            "stmts": [
+              {
+                "nodeType": "Stmt_Echo",
+                "exprs": [
+                  {
+                    "nodeType": "Scalar_String",
+                    "value": "asd"
+                  }
+                ]
+              }
+            ],
+            "elseifs": [],
+            "else": {
+              "nodeType": "Stmt_Else",
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Echo",
+                  "exprs": [
+                    {
+                      "nodeType": "Scalar_String",
+                      "value": "qwe"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      } }
+
+      it {
+        expect(result).to eq ms(
+                                 :If,
+                                 ms(:MuBool, true),
+                                 ms(:Print, ms(:MuString, 'asd')),
+                                 ms(:Print, ms(:MuString, 'qwe'))
+                             )
+      }
+    end
+  end
+
     # context 'simple module' do
     #   let(:code) { %q{
     #     module Pepita
@@ -1196,6 +1254,5 @@ describe Mulang::PHP do
   #     it { check_valid result }
   #     it { expect(result).to eq(Mulang::PHP.parse('a = a && false'))}
   #   end
-  end
 end
 

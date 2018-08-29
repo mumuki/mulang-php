@@ -14,7 +14,7 @@ end
 def convert_php_to_mulang(ast)
   json = JSON.parse ast, symbolize_names: true
   mulang_ast = Mulang::PHP.parse json
-  puts "MULANG", mulang_ast # TODO: Borrar
+  puts 'MULANG AST', mulang_ast
   check_valid mulang_ast
   mulang_ast
 end
