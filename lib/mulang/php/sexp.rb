@@ -2,7 +2,7 @@ module Mulang::PHP
   module Sexp
     def sequence(*contents)
       if contents.empty?
-        ms(:MuNil)
+        ms(:None)
       elsif contents.size == 1
         contents[0]
       else

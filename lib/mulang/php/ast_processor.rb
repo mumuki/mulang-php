@@ -12,6 +12,8 @@ module Mulang::PHP
     end
 
     def process(node)
+      return ms(:None) if node.nil?
+
       if node.is_a?(Array)
         return node.map { |it| process it }
       end
@@ -141,6 +143,27 @@ module Mulang::PHP
     def on_Stmt_Echo(node)
       ms :Print, sequence(*process(node[:exprs]))
     end
+
+    def on_Stmt_If(node)
+      condition = node[:cond]
+      body = node[:stmts]
+      else_block = node[:else]
+
+      ms :If, process(condition), sequence(*process(body)), process(else_block)
+    end
+    alias on_Stmt_ElseIf on_Stmt_If
+
+    def Stmt_Else(node)
+      sequence(*node[:stmts])
+    end
+
+    # def on_if(node)
+    #   condition, if_true, if_false = *node
+    #   if_true  ||= s(:nil)
+    #   if_false ||= s(:nil)
+    #
+    #   ms :If, process(condition), process(if_true), process(if_false)
+    # end
 
     # def on_class(node)
     #   name, superclass, body = *node

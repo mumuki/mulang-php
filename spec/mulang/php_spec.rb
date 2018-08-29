@@ -213,7 +213,7 @@ describe Mulang::PHP do
                                      ms(:MuNumber, 1),
                                      ms(:MuString, 'dos'),
                                      ms(:MuBool, true)
-                                   )
+                                 )
           }
         end
       end
@@ -472,47 +472,65 @@ describe Mulang::PHP do
 
         it { expect(result).to eq ms :Print, ms(:MuString, 'helolwrorlddd') }
       end
-    end
 
-    #   context 'if' do
-    #     ###
-    #     # if (2 == 3) { echo "Math is broken!"; }
-    #     ###
-    #     let(:ast) { %q{
-    #       [
-    #         {
-    #           "nodeType": "Stmt_If",
-    #           "cond": {
-    #             "nodeType": "Expr_BinaryOp_Equal",
-    #             "left": {
-    #               "nodeType": "Scalar_LNumber",
-    #               "value": 2
-    #             },
-    #             "right": {
-    #               "nodeType": "Scalar_LNumber",
-    #               "value": 3
-    #             }
-    #           },
-    #           "stmts": [
-    #             {
-    #               "nodeType": "Stmt_Echo",
-    #               "exprs": [
-    #                 {
-    #                   "nodeType": "Scalar_String",
-    #                   "value": "Math is broken!"
-    #                 }
-    #               ]
-    #             }
-    #           ],
-    #           "elseifs": [],
-    #           "else": null
-    #         }
-    #       ]
-    #     } }
-    #
-    #     it { expect(result).to eq ms :Print, ms(:MuString, 'helolwrorlddd') }
-    #   end
-    # end
+      context 'if' do
+        ###
+        # if (2 == 3) { echo "Oh no!"; echo "Math is broken!"; }
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_If",
+              "cond": {
+                "nodeType": "Expr_BinaryOp_Equal",
+                "left": {
+                  "nodeType": "Scalar_LNumber",
+                  "value": 2
+                },
+                "right": {
+                  "nodeType": "Scalar_LNumber",
+                  "value": 3
+                }
+              },
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Echo",
+                  "exprs": [
+                    {
+                      "nodeType": "Scalar_String",
+                      "value": "Oh no!"
+                    }
+                  ]
+                },
+                {
+                  "nodeType": "Stmt_Echo",
+                  "exprs": [
+                    {
+                      "nodeType": "Scalar_String",
+                      "value": "Math is broken!"
+                    }
+                  ]
+                }
+              ],
+              "elseifs": [],
+              "else": null
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :If,
+                                   ms(:Equal, ms(:MuNumber, 2), ms(:MuNumber, 3)),
+                                   sequence(
+                                       ms(:Print, ms(:MuString, 'Oh no!')),
+                                       ms(:Print, ms(:MuString, 'Math is broken!')),
+                                   ),
+                                   ms(:None)
+                               )
+        }
+      end
+    end
 
     # context 'simple module' do
     #   let(:code) { %q{
