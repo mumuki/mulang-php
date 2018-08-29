@@ -694,13 +694,12 @@ describe Mulang::PHP do
                                )
         }
       end
-    end
 
-    context 'if - else' do
-      ###
-      # if (true) { echo "asd"; } else { echo "qwe"; }
-      ###
-      let(:ast) { %q{
+      context 'if - else' do
+        ###
+        # if (true) { echo "asd"; } else { echo "qwe"; }
+        ###
+        let(:ast) { %q{
         [
           {
             "nodeType": "Stmt_If",
@@ -743,14 +742,15 @@ describe Mulang::PHP do
         ]
       } }
 
-      it {
-        expect(result).to eq ms(
-                                 :If,
-                                 ms(:MuBool, true),
-                                 ms(:Print, ms(:MuString, 'asd')),
-                                 ms(:Print, ms(:MuString, 'qwe'))
-                             )
-      }
+        it {
+          expect(result).to eq ms(
+                                   :If,
+                                   ms(:MuBool, true),
+                                   ms(:Print, ms(:MuString, 'asd')),
+                                   ms(:Print, ms(:MuString, 'qwe'))
+                               )
+        }
+      end
     end
   end
 
