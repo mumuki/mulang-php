@@ -115,7 +115,7 @@ describe Mulang::PHP do
       end
 
       context 'arrays' do
-        context 'empty array' do
+        context 'empty' do
           ###
           # [];
           ###
@@ -133,6 +133,65 @@ describe Mulang::PHP do
 
           it { expect(result).to eq ms :MuList, [] }
         end
+      end
+
+      context 'non-empty' do
+        ###
+        # [1, "dos", true];
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_Array",
+                "items": [
+                  {
+                    "nodeType": "Expr_ArrayItem",
+                    "key": null,
+                    "value": {
+                      "nodeType": "Scalar_LNumber",
+                      "value": 1
+                    },
+                    "byRef": false
+                  },
+                  {
+                    "nodeType": "Expr_ArrayItem",
+                    "key": null,
+                    "value": {
+                      "nodeType": "Scalar_String",
+                      "value": "dos"
+                    },
+                    "byRef": false
+                  },
+                  {
+                    "nodeType": "Expr_ArrayItem",
+                    "key": null,
+                    "value": {
+                      "nodeType": "Expr_ConstFetch",
+                      "name": {
+                        "nodeType": "Name",
+                        "parts": [
+                          "true"
+                        ]
+                      }
+                    },
+                    "byRef": false
+                  }
+                ]
+              }
+            }
+          ]
+         } }
+
+        it {
+          expect(result).to eq ms(
+            :MuList,
+            ms(:MuNumber, 1),
+            ms(:MuString, 'dos'),
+            ms(:MuBool, true)
+          )
+        }
       end
     end
 
