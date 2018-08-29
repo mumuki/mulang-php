@@ -252,7 +252,7 @@ module Mulang::PHP
       params = process(node[:params])
 
       if node[:stmts].nil?
-        ms :TypeSignature, name, params
+        ms :TypeSignature, name, ms(:ParameterizedType, params.map { |it| 'Any' }, 'Any', [])
       else
         simple_method name, params, process_block(node[:stmts])
       end
@@ -260,7 +260,7 @@ module Mulang::PHP
 
     def on_Stmt_Interface(node)
       parents = node[:extends].map { |it| get_name(it) }
-      ms :Interface, node[:name][:name], parents, process(node[:stmts])
+      ms :Interface, node[:name][:name], parents, process_block(node[:stmts])
     end
 
     def method_missing(m, *args, &block)

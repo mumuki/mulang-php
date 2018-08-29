@@ -550,8 +550,17 @@ describe Mulang::PHP do
         ]
       } }
 
-      xit { # // TODO: It isn't working. Check
-        expect(result).to eq '...'
+      it {
+        expect(result).to eq ms(
+                                 :Interface,
+                                 'A',
+                                 ['C', 'D'],
+                                 ms(
+                                     :TypeSignature,
+                                     'getHtml',
+                                     ms(:ParameterizedType, ['Any'], 'Any', [])
+                                 )
+                             )
       }
     end
   end
