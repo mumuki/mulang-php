@@ -19,12 +19,11 @@ describe Mulang::PHP do
   describe '#parse' do
     let(:result) { convert_php_to_mulang ast }
 
-    context 'assignment & expressions' do
-      context 'integers' do
-        ###
-        # $some_var = 2;
-        ###
-        let(:ast) { %q{
+    context 'assignment' do
+      ###
+      # $some_var = 2;
+      ###
+      let(:ast) { %q{
           [
             {
               "nodeType": "Stmt_Expression",
@@ -43,59 +42,89 @@ describe Mulang::PHP do
           ]
         } }
 
-        it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2 )}
+      it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2 )}
+    end
+
+    context 'values' do
+      context 'integer' do
+        ###
+        # 2;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Scalar_LNumber",
+                "value": 2
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :MuNumber, 2 }
       end
 
       context 'floats' do
         ###
-        # $some_var = 2.3;
+        # 2.3;
         ###
         let(:ast) { %q{
           [
             {
               "nodeType": "Stmt_Expression",
               "expr": {
-                "nodeType": "Expr_Assign",
-                "var": {
-                  "nodeType": "Expr_Variable",
-                  "name": "some_var"
-                },
-                "expr": {
-                  "nodeType": "Scalar_DNumber",
-                  "value": 2.3
-                }
+                "nodeType": "Scalar_DNumber",
+                "value": 2.3
               }
             }
           ]
         } }
 
-        it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2.3 )}
+        it { expect(result).to eq ms :MuNumber, 2.3 }
       end
 
       context 'strings' do
         ###
-        # $some_var = "Hi, I'm a string.";
+        # "Hi, I'm a string.";
         ###
         let(:ast) { %q{
           [
             {
               "nodeType": "Stmt_Expression",
               "expr": {
-                "nodeType": "Expr_Assign",
-                "var": {
-                  "nodeType": "Expr_Variable",
-                  "name": "some_var"
-                },
-                "expr": {
-                  "nodeType": "Scalar_String",
-                  "value": "Hi, I'm a string."
+                "nodeType": "Scalar_String",
+                "value": "Hi, I'm a string."
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :MuString, "Hi, I'm a string." }
+      end
+
+      context 'booleans' do
+        ###
+        # $some_var = true;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_ConstFetch",
+                "name": {
+                  "nodeType": "Name",
+                  "parts": [
+                    "true"
+                  ]
                 }
               }
             }
           ]
         } }
 
-        it { expect(result).to eq ms :Assignment, 'some_var',  ms(:MuString, "Hi, I'm a string.")}
+        it { expect(result).to eq ms :MuBool, true }
       end
     end
 

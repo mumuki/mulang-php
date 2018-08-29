@@ -45,6 +45,14 @@ module Mulang::PHP
       ms :MuString, node[:value]
     end
 
+    def on_Expr_ConstFetch(node)
+      if node[:name][:nodeType] == 'Name'
+        value = node[:name][:parts].first.downcase
+        return ms :MuBool, true if value == 'true'
+        return ms :MuBool, false if value == 'false'
+      end
+    end
+
     # def on_class(node)
     #   name, superclass, body = *node
     #   body ||= s(:nil)
