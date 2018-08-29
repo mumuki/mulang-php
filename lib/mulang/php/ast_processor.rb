@@ -174,7 +174,14 @@ module Mulang::PHP
     # STATEMENTS
 
     def on_Expr_Assign(node)
-      ms :Assignment, node[:var][:name], process(node[:expr])
+      left = node[:var]
+      exp = process(node[:expr])
+
+      if left[:nodeType] == 'Expr_PropertyFetch'
+        simple_send process(left[:var]), "#{left[:name][:name]}=", [exp]
+      else
+        ms :Assignment, left[:name], exp
+      end
     end
 
     def on_Stmt_Echo(node)

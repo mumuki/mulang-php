@@ -42,6 +42,39 @@ describe Mulang::PHP do
         it { expect(result).to eq simple_send(ms(:Reference, 'this'), 'nigiri', []) }
       end
     end
+
+    context 'property assignment' do
+      ###
+      # $obje->prop = 'value';
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Expression",
+            "expr": {
+              "nodeType": "Expr_Assign",
+              "var": {
+                "nodeType": "Expr_PropertyFetch",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "obje"
+                },
+                "name": {
+                  "nodeType": "Identifier",
+                  "name": "prop"
+                }
+              },
+              "expr": {
+                "nodeType": "Scalar_String",
+                "value": "value"
+              }
+            }
+          }
+        ]
+        } }
+
+      it { expect(result).to eq simple_send(ms(:Reference, 'obje'), 'prop=', [ms(:MuString, 'value')]) }
+    end
   end
 
   #   context 'instance variables references' do
