@@ -522,6 +522,73 @@ describe Mulang::PHP do
       }
     end
 
+    context 'declarations' do
+      context 'functions' do
+        ###
+        # function aFunction($param1) { asd(); };
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Function",
+              "byRef": false,
+              "name": {
+                "nodeType": "Identifier",
+                "name": "aFunction"
+              },
+              "params": [
+                {
+                  "nodeType": "Param",
+                  "type": null,
+                  "byRef": false,
+                  "variadic": false,
+                  "var": {
+                    "nodeType": "Expr_Variable",
+                    "name": "param1"
+                  },
+                  "default": null
+                }
+              ],
+              "returnType": null,
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Expression",
+                  "expr": {
+                    "nodeType": "Expr_FuncCall",
+                    "name": {
+                      "nodeType": "Name",
+                      "parts": [
+                        "asd"
+                      ]
+                    },
+                    "args": []
+                  }
+                },
+                {
+                  "nodeType": "Stmt_Return",
+                  "expr": {
+                    "nodeType": "Scalar_LNumber",
+                    "value": 32
+                  }
+                }
+              ]
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq simple_function(
+                                   'aFunction',
+                                   [ms(:VariablePattern, 'param1')],
+                                   sequence(
+                                     ms(:Application, ms(:Reference, 'asd'), []),
+                                     ms(:Return, ms(:MuNumber, 32))
+                                   )
+                               )
+        }
+      end
+    end
+
     context 'statements' do
       context 'assignment' do
         ###

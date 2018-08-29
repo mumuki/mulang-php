@@ -73,16 +73,14 @@ module Mulang::PHP
 
     # ---
 
+    # VALUES
+
     def on_Stmt_Expression(node)
       process node[:expr]
     end
 
     def on_Expr_Variable(node)
       ms :Reference, node[:name]
-    end
-
-    def on_Expr_Assign(node)
-      ms :Assignment, node[:var][:name], process(node[:expr])
     end
 
     def on_Scalar_DNumber(node)
@@ -132,6 +130,8 @@ module Mulang::PHP
       ms :VariablePattern, node[:var][:name]
     end
 
+    # OPERATORS
+
     def on_Expr_BinaryOp_Equal(node)
       ms :Equal, [process(node[:left]), process(node[:right])]
     end
@@ -150,12 +150,30 @@ module Mulang::PHP
     end
     alias on_Expr_PreDec on_Expr_PostDec
 
+    # FUNCTION CALLS
+
     def on_Expr_FuncCall(node)
       application get_name(node), process(node[:args])
     end
 
     def on_Arg(node)
       process node[:value]
+    end
+
+    # DECLARATIONS
+
+    def on_Stmt_Function(node)
+      simple_function node[:name][:name], process(node[:params]), process_block(node[:stmts])
+    end
+
+    def on_Stmt_Return(node)
+      ms :Return, process(node[:expr])
+    end
+
+    # STATEMENTS
+
+    def on_Expr_Assign(node)
+      ms :Assignment, node[:var][:name], process(node[:expr])
     end
 
     def on_Stmt_Echo(node)

@@ -20,24 +20,23 @@ module Mulang::PHP
       end
     end
 
-    def simple_method(name, args, body)
-      {
-        tag: :Method,
-        contents: [
-          name, 
-          [
-            [ args, {tag: :UnguardedBody, contents: body }]
-          ]
-        ]
-      }
+    def simple_function(name, args, body)
+      callable :Function, name, args, body
     end
 
-    def mu_method(tag, args, body)
+    def simple_method(name, args, body)
+      callable :Method, name, args, body
+    end
+
+    def callable(type, name, args, body)
       {
-        tag: tag,
-        contents: [
-          [ args, {tag: :UnguardedBody, contents: body }]
-        ]
+          tag: type,
+          contents: [
+              name,
+              [
+                  [ args, {tag: :UnguardedBody, contents: body }]
+              ]
+          ]
       }
     end
 
