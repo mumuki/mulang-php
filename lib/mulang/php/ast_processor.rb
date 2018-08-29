@@ -201,6 +201,10 @@ module Mulang::PHP
       ms :While, process(node[:cond]), process_block(node[:stmts])
     end
 
+    def on_Stmt_Foreach(node)
+      ms :For, [ms(:Generator, ms(:VariablePattern, node[:valueVar][:name]), process(node[:expr]))], process_block(node[:stmts])
+    end
+
     # def on_if(node)
     #   condition, if_true, if_false = *node
     #   if_true  ||= s(:nil)

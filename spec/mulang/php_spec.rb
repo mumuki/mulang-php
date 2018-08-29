@@ -946,6 +946,86 @@ describe Mulang::PHP do
                                )
         }
       end
+
+      context 'foreach' do
+        ###
+        # $a = [1, 2] ; foreach ($a as $v) { echo $v; }
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_Assign",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "a"
+                },
+                "expr": {
+                  "nodeType": "Expr_Array",
+                  "items": [
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": null,
+                      "value": {
+                        "nodeType": "Scalar_LNumber",
+                        "value": 1
+                      },
+                      "byRef": false
+                    },
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": null,
+                      "value": {
+                        "nodeType": "Scalar_LNumber",
+                        "value": 2
+                      },
+                      "byRef": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "nodeType": "Stmt_Foreach",
+              "expr": {
+                "nodeType": "Expr_Variable",
+                "name": "a"
+              },
+              "keyVar": null,
+              "byRef": false,
+              "valueVar": {
+                "nodeType": "Expr_Variable",
+                "name": "v"
+              },
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Echo",
+                  "exprs": [
+                    {
+                      "nodeType": "Expr_Variable",
+                      "name": "v"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq sequence(
+                                   ms(:Assignment, 'a', ms(:MuList, [ms(:MuNumber, 1), ms(:MuNumber, 2)])),
+                                   ms(
+                                     :For,
+                                     [
+                                         ms(:Generator, ms(:VariablePattern, 'v'), ms(:Reference, 'a'))
+                                     ],
+                                     ms(:Print, ms(:Reference, 'v'))
+                                   )
+                               )
+        }
+      end
     end
   end
 
