@@ -29,6 +29,10 @@ module Mulang::PHP
       array.map f
     end
 
+    def get_name(node)
+      node[:name][:parts].first
+    end
+
     def define_binary_operators!
       [
         { token: '===', name: 'Identical', supports_assign?: false },
@@ -70,7 +74,7 @@ module Mulang::PHP
     # ---
 
     def on_Stmt_Expression(node)
-      process(node[:expr])
+      process node[:expr]
     end
 
     def on_Expr_Variable(node)
@@ -91,9 +95,7 @@ module Mulang::PHP
     end
 
     def on_Expr_ConstFetch(node)
-      return ms :Other if node[:name][:nodeType] != 'Name'
-
-      value = node[:name][:parts].first.downcase
+       value = get_name(node).downcase
 
       case value
         when 'true'
@@ -139,6 +141,14 @@ module Mulang::PHP
       binary_operator '-', process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreDec on_Expr_PostDec
+
+    def on_Expr_FuncCall(node)
+      application get_name(node), process(node[:args])
+    end
+
+    def on_Arg(node)
+      process node[:value]
+    end
 
     def on_Stmt_Echo(node)
       ms :Print, process_block(node[:exprs])

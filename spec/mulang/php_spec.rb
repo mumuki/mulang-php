@@ -425,6 +425,47 @@ describe Mulang::PHP do
       end
     end
 
+    context 'functions calls' do
+      ###
+      # asd("AAA");
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Expression",
+            "expr": {
+              "nodeType": "Expr_FuncCall",
+              "name": {
+                "nodeType": "Name",
+                "parts": [
+                  "asd"
+                ]
+              },
+              "args": [
+                {
+                  "nodeType": "Arg",
+                  "value": {
+                    "nodeType": "Scalar_String",
+                    "value": "AAA"
+                  },
+                  "byRef": false,
+                  "unpack": false
+                }
+              ]
+            }
+          }
+        ]
+      } }
+
+      it {
+        expect(result).to eq ms(
+                                 :Application,
+                                 ms(:Reference, 'asd'),
+                                 [ms(:MuString, 'AAA')]
+                             )
+      }
+    end
+
     context 'statements' do
       context 'assignment' do
         ###
