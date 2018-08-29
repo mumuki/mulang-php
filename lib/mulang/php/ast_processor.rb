@@ -56,7 +56,7 @@ module Mulang::PHP
 
         if it[:supports_assign?]
           self.class.redefine_method(:"on_Expr_AssignOp_#{it[:name]}") { |node|
-            process_binary_operator "#{it[:token]}=", node
+            binary_operator "#{it[:token]}=", process(node[:var]), process(node[:expr])
           }
         end
       }
@@ -70,6 +70,10 @@ module Mulang::PHP
 
     def on_Stmt_Expression(node)
       process(node[:expr])
+    end
+
+    def on_Expr_Variable(node)
+      ms :Reference, node[:name]
     end
 
     def on_Expr_Assign(node)
@@ -121,17 +125,17 @@ module Mulang::PHP
       ms :Equal, [process(node[:left]), process(node[:right])]
     end
 
-    def Expr_BinaryOp_NotEqual(node)
+    def on_Expr_BinaryOp_NotEqual(node)
       ms :NotEqual, [process(node[:left]), process(node[:right])]
     end
 
     def on_Expr_PostInc(node)
-      binary_operator '+', process(node[:var]), 1
+      binary_operator '+', process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreInc on_Expr_PostInc
 
     def on_Expr_PostDec(node)
-      binary_operator '-', process(node[:var]), 1
+      binary_operator '-', process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreDec on_Expr_PostDec
 
@@ -411,5 +415,9 @@ module Mulang::PHP
     #   ms :Send, process(receptor), message, (process_all(args) + extra_args)
     # end
 
+    # TODO: Recuperar
+    # def method_missing(m, *args, &block)
+    #   ms :Other
+    # end
   end
 end

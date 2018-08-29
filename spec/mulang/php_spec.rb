@@ -269,6 +269,58 @@ describe Mulang::PHP do
     end
 
     context 'operators' do
+      context '==' do
+        ###
+        # "h" == "a";
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_BinaryOp_Equal",
+                "left": {
+                  "nodeType": "Scalar_String",
+                  "value": "h"
+                },
+                "right": {
+                  "nodeType": "Scalar_String",
+                  "value": "a"
+                }
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :Equal, ms(:MuString, 'h'), ms(:MuString, 'a') }
+      end
+
+      context '!=' do
+        ###
+        # "h" != "a";
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_BinaryOp_NotEqual",
+                "left": {
+                  "nodeType": "Scalar_String",
+                  "value": "h"
+                },
+                "right": {
+                  "nodeType": "Scalar_String",
+                  "value": "a"
+                }
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :NotEqual, ms(:MuString, 'h'), ms(:MuString, 'a') }
+      end
+
       context '+' do
         ###
         # 2 + 3;
@@ -298,6 +350,66 @@ describe Mulang::PHP do
                                    ms(:Reference, '+'),
                                    [ms(:MuNumber, 2), ms(:MuNumber, 3)]
                                  )
+        }
+      end
+
+      context '++' do
+        ###
+        # $a++;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_PostInc",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "a"
+                }
+              }
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :Application,
+                                   ms(:Reference, '+'),
+                                   [ms(:Reference, 'a'), ms(:MuNumber, 1)]
+                               )
+        }
+      end
+
+      context '+=' do
+        ###
+        # $a += 8;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_AssignOp_Plus",
+                "var": {
+                  "nodeType": "Expr_Variable",
+                  "name": "a"
+                },
+                "expr": {
+                  "nodeType": "Scalar_LNumber",
+                  "value": 8
+                }
+              }
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :Application,
+                                   ms(:Reference, '+='),
+                                   [ms(:Reference, 'a'), ms(:MuNumber, 8)]
+                               )
         }
       end
     end
