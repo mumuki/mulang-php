@@ -266,6 +266,62 @@ describe Mulang::PHP do
           ) }
         end
       end
+
+      context 'lambdas' do
+        ###
+        # function($param1) { asd(); };
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_Closure",
+                "static": false,
+                "byRef": false,
+                "params": [
+                  {
+                    "nodeType": "Param",
+                    "type": null,
+                    "byRef": false,
+                    "variadic": false,
+                    "var": {
+                      "nodeType": "Expr_Variable",
+                      "name": "param1"
+                    },
+                    "default": null
+                  }
+                ],
+                "uses": [],
+                "returnType": null,
+                "stmts": [
+                  {
+                    "nodeType": "Stmt_Expression",
+                    "expr": {
+                      "nodeType": "Expr_FuncCall",
+                      "name": {
+                        "nodeType": "Name",
+                        "parts": [
+                          "asd"
+                        ]
+                      },
+                      "args": []
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+          } }
+
+        it {
+          expect(result).to eq ms(
+                                   :Lambda,
+                                   [ms(:VariablePattern, 'param1')],
+                                   ms(:Application, ms(:Reference, 'asd'), [])
+                               )
+        }
+      end
     end
 
     context 'operators' do

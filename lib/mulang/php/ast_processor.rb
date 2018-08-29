@@ -124,6 +124,14 @@ module Mulang::PHP
                  : value
     end
 
+    def on_Expr_Closure(node)
+      ms :Lambda, process(node[:params]), process_block(node[:stmts])
+    end
+
+    def on_Param(node)
+      ms :VariablePattern, node[:var][:name]
+    end
+
     def on_Expr_BinaryOp_Equal(node)
       ms :Equal, [process(node[:left]), process(node[:right])]
     end
