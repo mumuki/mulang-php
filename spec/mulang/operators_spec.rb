@@ -91,7 +91,7 @@ describe Mulang::PHP do
         }
       end
 
-      context '+' do
+      context '.' do
         ###
         # "a"."b";
         ###
