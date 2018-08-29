@@ -233,7 +233,8 @@ module Mulang::PHP
 
     def on_Stmt_Class(node)
       # TODO: Sacar el None y soportar herencia
-      ms :Class, node[:name][:name], nil, process_block(node[:stmts])
+      superclass = node.dig(:extends, :parts)&.first
+      ms :Class, node[:name][:name], superclass, process_block(node[:stmts])
     end
 
     def on_Stmt_Property(node)

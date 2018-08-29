@@ -387,6 +387,51 @@ describe Mulang::PHP do
                              )
       }
     end
+
+    context 'inheritance' do
+      ###
+      # class A {}
+      # class B extends A {}
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Class",
+            "flags": 0,
+            "extends": null,
+            "implements": [],
+            "name": {
+              "nodeType": "Identifier",
+              "name": "A"
+            },
+            "stmts": []
+          },
+          {
+            "nodeType": "Stmt_Class",
+            "flags": 0,
+            "extends": {
+              "nodeType": "Name",
+              "parts": [
+                "A"
+              ]
+            },
+            "implements": [],
+            "name": {
+              "nodeType": "Identifier",
+              "name": "B"
+            },
+            "stmts": []
+          }
+        ]
+      } }
+
+      it {
+        expect(result).to eq sequence(
+                                 ms(:Class, 'A', nil, ms(:None)),
+                                 ms(:Class, 'B', 'A', ms(:None))
+                             )
+      }
+    end
   end
 
   #   context 'module with self methods' do
