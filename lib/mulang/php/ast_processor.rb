@@ -3,6 +3,10 @@ module Mulang::PHP
     include AST::Sexp
     include Mulang::PHP::Sexp
 
+    def initialize
+      define_binary_operators!
+    end
+
     def process_ast(ast)
       process sequence(*ast)
     end
@@ -21,6 +25,45 @@ module Mulang::PHP
 
     def process_array(array, &f)
       array.map f
+    end
+
+    def define_binary_operators!
+      [
+        { token: '===', name: 'Identical', supports_assign?: false },
+        { token: '!==', name: 'NotIdentical', supports_assign?: false },
+        { token: '+', name: 'Plus', supports_assign?: true },
+        { token: '-', name: 'Minus', supports_assign?: true },
+        { token: '-', name: 'Minus', supports_assign?: true },
+        { token: '*', name: 'Mul', supports_assign?: true },
+        { token: '/', name: 'Div', supports_assign?: true },
+        { token: '%', name: 'Mod', supports_assign?: true },
+        { token: '**', name: 'Pow', supports_assign?: true },
+        { token: '>', name: 'Greater', supports_assign?: false },
+        { token: '<', name: 'Smaller', supports_assign?: false },
+        { token: '>=', name: 'GreaterOrEqual', supports_assign?: false },
+        { token: '<=', name: 'SmallerOrEqual', supports_assign?: false },
+        { token: '&', name: 'BitwiseAnd', supports_assign?: true },
+        { token: '|', name: 'BitwiseOr', supports_assign?: true },
+        { token: '&&', name: 'BooleanAnd', supports_assign?: false },
+        { token: '||', name: 'BooleanOr', supports_assign?: false },
+        { token: 'and', name: 'LogicalAnd', supports_assign?: false },
+        { token: 'or', name: 'LogicalOr', supports_assign?: false },
+        { token: 'xor', name: 'LogicalXOr', supports_assign?: false }
+      ].each { |it|
+        self.class.redefine_method(:"on_Expr_BinaryOp_#{it[:name]}") { |node|
+          process_binary_operator it[:token], node
+        }
+
+        if it[:supports_assign?]
+          self.class.redefine_method(:"on_Expr_AssignOp_#{it[:name]}") { |node|
+            process_binary_operator "#{it[:token]}=", node
+          }
+        end
+      }
+    end
+
+    def process_binary_operator(operator, node)
+      binary_operator operator, process(node[:left]), process(node[:right])
     end
 
     # ---
@@ -73,6 +116,24 @@ module Mulang::PHP
       node[:key] ? ms(:Attribute, node[:key][:value].to_s, value)
                  : value
     end
+
+    def on_Expr_BinaryOp_Equal(node)
+      ms :Equal, [process(node[:left]), process(node[:right])]
+    end
+
+    def Expr_BinaryOp_NotEqual(node)
+      ms :NotEqual, [process(node[:left]), process(node[:right])]
+    end
+
+    def on_Expr_PostInc(node)
+      binary_operator '+', process(node[:var]), 1
+    end
+    alias on_Expr_PreInc on_Expr_PostInc
+
+    def on_Expr_PostDec(node)
+      binary_operator '-', process(node[:var]), 1
+    end
+    alias on_Expr_PreDec on_Expr_PostDec
 
     def on_Stmt_Echo(node)
       ms :Print, sequence(*process(node[:exprs]))

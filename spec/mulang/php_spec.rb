@@ -268,6 +268,40 @@ describe Mulang::PHP do
       end
     end
 
+    context 'operators' do
+      context '+' do
+        ###
+        # 2 + 3;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_BinaryOp_Plus",
+                "left": {
+                  "nodeType": "Scalar_LNumber",
+                  "value": 2
+                },
+                "right": {
+                  "nodeType": "Scalar_LNumber",
+                  "value": 3
+                }
+              }
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :Application,
+                                   ms(:Reference, '+'),
+                                   [ms(:MuNumber, 2), ms(:MuNumber, 3)]
+                                 )
+        }
+      end
+    end
+
     context 'statements' do
       context 'assignment' do
         ###
@@ -316,6 +350,46 @@ describe Mulang::PHP do
         it { expect(result).to eq ms :Print, ms(:MuString, 'helolwrorlddd') }
       end
     end
+
+    #   context 'if' do
+    #     ###
+    #     # if (2 == 3) { echo "Math is broken!"; }
+    #     ###
+    #     let(:ast) { %q{
+    #       [
+    #         {
+    #           "nodeType": "Stmt_If",
+    #           "cond": {
+    #             "nodeType": "Expr_BinaryOp_Equal",
+    #             "left": {
+    #               "nodeType": "Scalar_LNumber",
+    #               "value": 2
+    #             },
+    #             "right": {
+    #               "nodeType": "Scalar_LNumber",
+    #               "value": 3
+    #             }
+    #           },
+    #           "stmts": [
+    #             {
+    #               "nodeType": "Stmt_Echo",
+    #               "exprs": [
+    #                 {
+    #                   "nodeType": "Scalar_String",
+    #                   "value": "Math is broken!"
+    #                 }
+    #               ]
+    #             }
+    #           ],
+    #           "elseifs": [],
+    #           "else": null
+    #         }
+    #       ]
+    #     } }
+    #
+    #     it { expect(result).to eq ms :Print, ms(:MuString, 'helolwrorlddd') }
+    #   end
+    # end
 
     # context 'simple module' do
     #   let(:code) { %q{
