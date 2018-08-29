@@ -379,7 +379,7 @@ describe Mulang::PHP do
       }
     end
 
-    context 'inheritance' do
+    context 'extends' do
       ###
       # class A {}
       # class B extends A {}
@@ -420,6 +420,76 @@ describe Mulang::PHP do
         expect(result).to eq sequence(
                                  ms(:Class, 'A', nil, ms(:None)),
                                  ms(:Class, 'B', 'A', ms(:None))
+                             )
+      }
+    end
+
+    context 'extends & implements' do
+      ###
+      # class A extends B implements C, D { }
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Class",
+            "flags": 0,
+            "extends": {
+              "nodeType": "Name",
+              "parts": [
+                "B"
+              ]
+            },
+            "implements": [
+              {
+                "nodeType": "Name",
+                "parts": [
+                  "C"
+                ]
+              },
+              {
+                "nodeType": "Name",
+                "parts": [
+                  "D"
+                ]
+              }
+            ],
+            "name": {
+              "nodeType": "Identifier",
+              "name": "A"
+            },
+            "stmts": [
+              {
+                "nodeType": "Stmt_Property",
+                "flags": 0,
+                "props": [
+                  {
+                    "nodeType": "Stmt_PropertyProperty",
+                    "name": {
+                      "nodeType": "VarLikeIdentifier",
+                      "name": "hello"
+                    },
+                    "default": {
+                      "nodeType": "Scalar_LNumber",
+                      "value": 2
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      } }
+
+      it {
+        expect(result).to eq ms(
+                                 :Class,
+                                 'A',
+                                 'B',
+                                 sequence(
+                                   ms(:Implement, ms(:Reference, 'C')),
+                                   ms(:Implement, ms(:Reference, 'D')),
+                                   ms(:Attribute, 'hello', ms(:MuNumber, 2))
+                                 )
                              )
       }
     end

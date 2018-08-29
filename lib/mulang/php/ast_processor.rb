@@ -30,7 +30,7 @@ module Mulang::PHP
     end
 
     def get_name(node)
-      node[:name][:parts].first
+      node[:parts].first
     end
 
     def define_binary_operators!
@@ -94,7 +94,7 @@ module Mulang::PHP
     end
 
     def on_Expr_ConstFetch(node)
-       value = get_name(node).downcase
+       value = get_name(node[:name]).downcase
 
       case value
         when 'true'
@@ -154,7 +154,7 @@ module Mulang::PHP
     # FUNCTION CALLS
 
     def on_Expr_FuncCall(node)
-      application get_name(node), process(node[:args])
+      application get_name(node[:name]), process(node[:args])
     end
 
     def on_Arg(node)
@@ -228,12 +228,18 @@ module Mulang::PHP
     end
 
     def on_Name(node)
-      ms :Reference, node[:parts].first
+      ms :Reference, get_name(node)
     end
 
     def on_Stmt_Class(node)
       superclass = node.dig(:extends, :parts)&.first
-      ms :Class, node[:name][:name], superclass, process_block(node[:stmts])
+      interfaces = node[:implements].map { |it| { nodeType: 'Stmt_Implement', name: get_name(it) } }
+
+      ms :Class, node[:name][:name], superclass, process_block(interfaces.concat(node[:stmts]))
+    end
+
+    def on_Stmt_Implement(node)
+      ms :Implement, ms(:Reference, node[:name])
     end
 
     def on_Stmt_Property(node)
@@ -253,7 +259,7 @@ module Mulang::PHP
     end
 
     def on_Stmt_Interface(node)
-      parents = node[:extends].map { |it| it[:parts].first }
+      parents = node[:extends].map { |it| get_name(it) }
       ms :Interface, node[:name][:name], parents, process(node[:stmts])
     end
 
