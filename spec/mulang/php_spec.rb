@@ -820,6 +820,47 @@ describe Mulang::PHP do
                                )
         }
       end
+
+      context 'for' do
+        ###
+        # while (true) { echo "infinito"; }
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_While",
+              "cond": {
+                "nodeType": "Expr_ConstFetch",
+                "name": {
+                  "nodeType": "Name",
+                  "parts": [
+                    "true"
+                  ]
+                }
+              },
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Echo",
+                  "exprs": [
+                    {
+                      "nodeType": "Scalar_String",
+                      "value": "infinito"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :While,
+                                   ms(:MuBool, true),
+                                   ms(:Print, ms(:MuString, 'infinito'))
+                               )
+        }
+      end
     end
   end
 
