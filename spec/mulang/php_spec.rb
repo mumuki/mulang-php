@@ -751,6 +751,75 @@ describe Mulang::PHP do
                                )
         }
       end
+
+      context 'for' do
+        ###
+        # for ($i = 1; $i <= 10; $i++) { echo $i; }
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_For",
+              "init": [
+                {
+                  "nodeType": "Expr_Assign",
+                  "var": {
+                    "nodeType": "Expr_Variable",
+                    "name": "i"
+                  },
+                  "expr": {
+                    "nodeType": "Scalar_LNumber",
+                    "value": 1
+                  }
+                }
+              ],
+              "cond": [
+                {
+                  "nodeType": "Expr_BinaryOp_SmallerOrEqual",
+                  "left": {
+                    "nodeType": "Expr_Variable",
+                    "name": "i"
+                  },
+                  "right": {
+                    "nodeType": "Scalar_LNumber",
+                    "value": 10
+                  }
+                }
+              ],
+              "loop": [
+                {
+                  "nodeType": "Expr_PostInc",
+                  "var": {
+                    "nodeType": "Expr_Variable",
+                    "name": "i"
+                  }
+                }
+              ],
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Echo",
+                  "exprs": [
+                    {
+                      "nodeType": "Expr_Variable",
+                      "name": "i"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :ForLoop,
+                                   ms(:Assignment, 'i', ms(:MuNumber, 1)),
+                                   ms(:Application, ms(:Reference, '<='), [ms(:Reference, 'i'), ms(:MuNumber, 10)]),
+                                   ms(:Application, ms(:Reference, '+'), [ms(:Reference, 'i'), ms(:MuNumber, 1)]),
+                                   ms(:Print, ms(:Reference, 'i'))
+                               )
+        }
+      end
     end
   end
 

@@ -193,6 +193,10 @@ module Mulang::PHP
       process_block node[:stmts]
     end
 
+    def on_Stmt_For(node)
+      ms :ForLoop, process_block(node[:init]), process_block(node[:cond]), process_block(node[:loop]), process_block(node[:stmts])
+    end
+
     # def on_if(node)
     #   condition, if_true, if_false = *node
     #   if_true  ||= s(:nil)
