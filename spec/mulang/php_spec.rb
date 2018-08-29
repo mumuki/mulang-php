@@ -700,47 +700,47 @@ describe Mulang::PHP do
         # if (true) { echo "asd"; } else { echo "qwe"; }
         ###
         let(:ast) { %q{
-        [
-          {
-            "nodeType": "Stmt_If",
-            "cond": {
-              "nodeType": "Expr_ConstFetch",
-              "name": {
-                "nodeType": "Name",
-                "parts": [
-                  "true"
-                ]
-              }
-            },
-            "stmts": [
-              {
-                "nodeType": "Stmt_Echo",
-                "exprs": [
-                  {
-                    "nodeType": "Scalar_String",
-                    "value": "asd"
-                  }
-                ]
-              }
-            ],
-            "elseifs": [],
-            "else": {
-              "nodeType": "Stmt_Else",
+          [
+            {
+              "nodeType": "Stmt_If",
+              "cond": {
+                "nodeType": "Expr_ConstFetch",
+                "name": {
+                  "nodeType": "Name",
+                  "parts": [
+                    "true"
+                  ]
+                }
+              },
               "stmts": [
                 {
                   "nodeType": "Stmt_Echo",
                   "exprs": [
                     {
                       "nodeType": "Scalar_String",
-                      "value": "qwe"
+                      "value": "asd"
                     }
                   ]
                 }
-              ]
+              ],
+              "elseifs": [],
+              "else": {
+                "nodeType": "Stmt_Else",
+                "stmts": [
+                  {
+                    "nodeType": "Stmt_Echo",
+                    "exprs": [
+                      {
+                        "nodeType": "Scalar_String",
+                        "value": "qwe"
+                      }
+                    ]
+                  }
+                ]
+              }
             }
-          }
-        ]
-      } }
+          ]
+        } }
 
         it {
           expect(result).to eq ms(
@@ -748,6 +748,91 @@ describe Mulang::PHP do
                                    ms(:MuBool, true),
                                    ms(:Print, ms(:MuString, 'asd')),
                                    ms(:Print, ms(:MuString, 'qwe'))
+                               )
+        }
+      end
+
+      context 'if - elseif - else' do
+        ###
+        # if (false) { 1; } else if (true) { 2; } else { 3; }
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_If",
+              "cond": {
+                "nodeType": "Expr_ConstFetch",
+                "name": {
+                  "nodeType": "Name",
+                  "parts": [
+                    "false"
+                  ]
+                }
+              },
+              "stmts": [
+                {
+                  "nodeType": "Stmt_Expression",
+                  "expr": {
+                    "nodeType": "Scalar_LNumber",
+                    "value": 1
+                  }
+                }
+              ],
+              "elseifs": [],
+              "else": {
+                "nodeType": "Stmt_Else",
+                "stmts": [
+                  {
+                    "nodeType": "Stmt_If",
+                    "cond": {
+                      "nodeType": "Expr_ConstFetch",
+                      "name": {
+                        "nodeType": "Name",
+                        "parts": [
+                          "true"
+                        ]
+                      }
+                    },
+                    "stmts": [
+                      {
+                        "nodeType": "Stmt_Expression",
+                        "expr": {
+                          "nodeType": "Scalar_LNumber",
+                          "value": 2
+                        }
+                      }
+                    ],
+                    "elseifs": [],
+                    "else": {
+                      "nodeType": "Stmt_Else",
+                      "stmts": [
+                        {
+                          "nodeType": "Stmt_Expression",
+                          "expr": {
+                            "nodeType": "Scalar_LNumber",
+                            "value": 3
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        } }
+
+        it {
+          expect(result).to eq ms(
+                                   :If,
+                                   ms(:MuBool, false),
+                                   ms(:MuNumber, 1),
+                                   ms(
+                                       :If,
+                                       ms(:MuBool, true),
+                                       ms(:MuNumber, 2),
+                                       ms(:MuNumber, 3)
+                                   )
                                )
         }
       end
@@ -821,7 +906,7 @@ describe Mulang::PHP do
         }
       end
 
-      context 'for' do
+      context 'while' do
         ###
         # while (true) { echo "infinito"; }
         ###
