@@ -46,10 +46,19 @@ module Mulang::PHP
     end
 
     def on_Expr_ConstFetch(node)
-      if node[:name][:nodeType] == 'Name'
-        value = node[:name][:parts].first.downcase
-        return ms :MuBool, true if value == 'true'
-        return ms :MuBool, false if value == 'false'
+      return ms :Other if node[:name][:nodeType] != 'Name'
+
+      value = node[:name][:parts].first.downcase
+
+      case value
+        when 'true'
+          ms :MuBool, true
+        when 'false'
+          ms :MuBool, false
+        when 'null'
+          ms :None
+        else
+          ms :Reference, value
       end
     end
 

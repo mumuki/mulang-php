@@ -114,6 +114,30 @@ describe Mulang::PHP do
         end
       end
 
+      context 'nulls' do
+        ###
+        # null;
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Expression",
+              "expr": {
+                "nodeType": "Expr_ConstFetch",
+                "name": {
+                  "nodeType": "Name",
+                  "parts": [
+                    "null"
+                  ]
+                }
+              }
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :None }
+      end
+
       context 'arrays' do
         context 'empty' do
           ###
