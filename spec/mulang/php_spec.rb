@@ -268,11 +268,12 @@ describe Mulang::PHP do
       end
     end
 
-    context 'assignment' do
-      ###
-      # $some_var = 2;
-      ###
-      let(:ast) { %q{
+    context 'statements' do
+      context 'assignment' do
+        ###
+        # $some_var = 2;
+        ###
+        let(:ast) { %q{
           [
             {
               "nodeType": "Stmt_Expression",
@@ -291,7 +292,29 @@ describe Mulang::PHP do
           ]
         } }
 
-      it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2 )}
+        it { expect(result).to eq ms :Assignment, 'some_var', ms(:MuNumber, 2) }
+      end
+
+      context 'print' do
+        ###
+        # echo "helolwrorlddd";
+        ###
+        let(:ast) { %q{
+          [
+            {
+              "nodeType": "Stmt_Echo",
+              "exprs": [
+                {
+                  "nodeType": "Scalar_String",
+                  "value": "helolwrorlddd"
+                }
+              ]
+            }
+          ]
+        } }
+
+        it { expect(result).to eq ms :Print, ms(:MuString, 'helolwrorlddd') }
+      end
     end
 
     # context 'simple module' do

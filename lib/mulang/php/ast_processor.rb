@@ -74,6 +74,10 @@ module Mulang::PHP
                  : value
     end
 
+    def on_Stmt_Echo(node)
+      ms :Print, sequence(*process(node[:exprs]))
+    end
+
     # def on_class(node)
     #   name, superclass, body = *node
     #   body ||= s(:nil)
