@@ -121,17 +121,43 @@ describe Mulang::PHP do
 
       it { expect(result).to eq simple_send(ms(:Reference, 'obj'), 'metodo', [ms(:MuNumber, 1), ms(:MuNumber, 2)]) }
     end
+
+    context 'new operator' do
+      ###
+      # new Cosa("arg");
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Expression",
+            "expr": {
+              "nodeType": "Expr_New",
+              "class": {
+                "nodeType": "Name",
+                "parts": [
+                  "Cosa"
+                ]
+              },
+              "args": [
+                {
+                  "nodeType": "Arg",
+                  "value": {
+                    "nodeType": "Scalar_String",
+                    "value": "arg"
+                  },
+                  "byRef": false,
+                  "unpack": false
+                }
+              ]
+            }
+          }
+        ]
+      } }
+
+      it { expect(result).to eq ms(:New, ms(:Reference, 'Cosa'), [ms(:MuString, 'arg')]) }
+    end
   end
 
-  #   context 'message sends' do
-  #     let(:code) { %q{
-  #       a = 2
-  #       a + 6
-  #     } }
-  #     it { expect(result[:contents][1]).to eq simple_send(ms(:Reference, :a), :+, [ms(:MuNumber, 6)]) }
-  #     it { check_valid result }
-  #   end
-  #
   #   context 'module with self methods' do
   #     let(:code) { %q{
   #       module Pepita

@@ -223,6 +223,14 @@ module Mulang::PHP
       simple_send process(node[:var]), node[:name][:name], process(node[:args])
     end
 
+    def on_Expr_New(node)
+      ms :New, process(node[:class]), process(node[:args])
+    end
+
+    def on_Name(node)
+      ms :Reference, node[:parts].first
+    end
+
     # def on_class(node)
     #   name, superclass, body = *node
     #   body ||= s(:nil)
