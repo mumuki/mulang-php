@@ -156,6 +156,237 @@ describe Mulang::PHP do
 
       it { expect(result).to eq ms(:New, ms(:Reference, 'Cosa'), [ms(:MuString, 'arg')]) }
     end
+
+    context 'class' do
+      ###
+      # class Vegetable {
+      #   var $edible;
+      #   var $color;
+      #
+      #   function __construct($edible, $color = "green") {
+      #     $this->edible = $edible;
+      #     $this->color = $color;
+      #   }
+      #
+      #   function is_edible() {
+      #     return $this->edible;
+      #   }
+      #
+      #   function what_color() {
+      #     return $this->color;
+      #   }
+      # }
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Class",
+            "flags": 0,
+            "extends": null,
+            "implements": [],
+            "name": {
+              "nodeType": "Identifier",
+              "name": "Vegetable"
+            },
+            "stmts": [
+              {
+                "nodeType": "Stmt_Property",
+                "flags": 0,
+                "props": [
+                  {
+                    "nodeType": "Stmt_PropertyProperty",
+                    "name": {
+                      "nodeType": "VarLikeIdentifier",
+                      "name": "edible"
+                    },
+                    "default": null
+                  }
+                ]
+              },
+              {
+                "nodeType": "Stmt_Property",
+                "flags": 0,
+                "props": [
+                  {
+                    "nodeType": "Stmt_PropertyProperty",
+                    "name": {
+                      "nodeType": "VarLikeIdentifier",
+                      "name": "color"
+                    },
+                    "default": null
+                  }
+                ]
+              },
+              {
+                "nodeType": "Stmt_ClassMethod",
+                "flags": 0,
+                "byRef": false,
+                "name": {
+                  "nodeType": "Identifier",
+                  "name": "__construct"
+                },
+                "params": [
+                  {
+                    "nodeType": "Param",
+                    "type": null,
+                    "byRef": false,
+                    "variadic": false,
+                    "var": {
+                      "nodeType": "Expr_Variable",
+                      "name": "edible"
+                    },
+                    "default": null
+                  },
+                  {
+                    "nodeType": "Param",
+                    "type": null,
+                    "byRef": false,
+                    "variadic": false,
+                    "var": {
+                      "nodeType": "Expr_Variable",
+                      "name": "color"
+                    },
+                    "default": {
+                      "nodeType": "Scalar_String",
+                      "value": "green"
+                    }
+                  }
+                ],
+                "returnType": null,
+                "stmts": [
+                  {
+                    "nodeType": "Stmt_Expression",
+                    "expr": {
+                      "nodeType": "Expr_Assign",
+                      "var": {
+                        "nodeType": "Expr_PropertyFetch",
+                        "var": {
+                          "nodeType": "Expr_Variable",
+                          "name": "this"
+                        },
+                        "name": {
+                          "nodeType": "Identifier",
+                          "name": "edible"
+                        }
+                      },
+                      "expr": {
+                        "nodeType": "Expr_Variable",
+                        "name": "edible"
+                      }
+                    }
+                  },
+                  {
+                    "nodeType": "Stmt_Expression",
+                    "expr": {
+                      "nodeType": "Expr_Assign",
+                      "var": {
+                        "nodeType": "Expr_PropertyFetch",
+                        "var": {
+                          "nodeType": "Expr_Variable",
+                          "name": "this"
+                        },
+                        "name": {
+                          "nodeType": "Identifier",
+                          "name": "color"
+                        }
+                      },
+                      "expr": {
+                        "nodeType": "Expr_Variable",
+                        "name": "color"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "nodeType": "Stmt_ClassMethod",
+                "flags": 0,
+                "byRef": false,
+                "name": {
+                  "nodeType": "Identifier",
+                  "name": "is_edible"
+                },
+                "params": [],
+                "returnType": null,
+                "stmts": [
+                  {
+                    "nodeType": "Stmt_Return",
+                    "expr": {
+                      "nodeType": "Expr_PropertyFetch",
+                      "var": {
+                        "nodeType": "Expr_Variable",
+                        "name": "this"
+                      },
+                      "name": {
+                        "nodeType": "Identifier",
+                        "name": "edible"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "nodeType": "Stmt_ClassMethod",
+                "flags": 0,
+                "byRef": false,
+                "name": {
+                  "nodeType": "Identifier",
+                  "name": "what_color"
+                },
+                "params": [],
+                "returnType": null,
+                "stmts": [
+                  {
+                    "nodeType": "Stmt_Return",
+                    "expr": {
+                      "nodeType": "Expr_PropertyFetch",
+                      "var": {
+                        "nodeType": "Expr_Variable",
+                        "name": "this"
+                      },
+                      "name": {
+                        "nodeType": "Identifier",
+                        "name": "color"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      } }
+
+      it {
+        expect(result).to eq ms(
+                                 :Class,
+                                 'Vegetable',
+                                 nil,
+                                 sequence(
+                                     ms(:Attribute, 'edible', ms(:None)),
+                                     ms(:Attribute, 'color', ms(:None)),
+                                     simple_method(
+                                         '__construct',
+                                         [ms(:VariablePattern, 'edible'), ms(:VariablePattern, 'color')],
+                                         sequence(
+                                             ms(:Send, ms(:Reference, 'this'), ms(:Reference, 'edible='), [ms(:Reference, 'edible')]),
+                                             ms(:Send, ms(:Reference, 'this'), ms(:Reference, 'color='), [ms(:Reference, 'color')]),
+                                         )
+                                     ),
+                                     simple_method(
+                                         'is_edible',
+                                         [],
+                                         ms(:Return, ms(:Send, ms(:Reference, 'this'), ms(:Reference, 'edible'), []))
+                                     ),
+                                     simple_method(
+                                         'what_color',
+                                         [],
+                                         ms(:Return, ms(:Send, ms(:Reference, 'this'), ms(:Reference, 'color'), []))
+                                     ),
+                                 )
+                             )
+      }
+    end
   end
 
   #   context 'module with self methods' do

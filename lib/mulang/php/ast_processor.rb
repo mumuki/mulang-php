@@ -231,6 +231,20 @@ module Mulang::PHP
       ms :Reference, node[:parts].first
     end
 
+    def on_Stmt_Class(node)
+      # TODO: Sacar el None y soportar herencia
+      ms :Class, node[:name][:name], nil, process_block(node[:stmts])
+    end
+
+    def on_Stmt_Property(node)
+      prop = node[:props].first
+      ms :Attribute, prop[:name][:name], process(prop[:default])
+    end
+
+    def on_Stmt_ClassMethod(node)
+      simple_method node[:name][:name], process(node[:params]), process_block(node[:stmts])
+    end
+
     # def on_class(node)
     #   name, superclass, body = *node
     #   body ||= s(:nil)
