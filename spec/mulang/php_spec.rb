@@ -1061,55 +1061,6 @@ describe Mulang::PHP do
     end
   end
 
-    # context 'simple module' do
-    #   let(:code) { %q{
-    #     module Pepita
-    #     end
-    #   } }
-    #   it { expect(result).to eq ms :Object, :Pepita, ms(:MuNil) }
-    #   it { check_valid result }
-    # end
-    #
-    # context 'modules and variables' do
-    #   let(:code) { %q{
-    #     module Pepita
-    #     end
-    #     module Pepona
-    #     end
-    #     otra_pepita = Pepita
-    #     otra_pepona = Pepona
-    #   } }
-    #   it { expect(result[:tag]).to eq :Sequence }
-    #   it { expect(result[:contents].length).to eq 4 }
-    # end
-
-    # context 'variables' do
-    #   ###
-    #   # $one = $another;
-    #   ###
-    #   let(:ast) { %q{
-    #     [
-    #         {
-    #             "nodeType": "Stmt_Expression",
-    #             "expr": {
-    #                 "nodeType": "Expr_Assign",
-    #                 "var": {
-    #                     "nodeType": "Expr_Variable",
-    #                     "name": "otra_pepita"
-    #                 },
-    #                 "expr": {
-    #                     "nodeType": "Expr_Variable",
-    #                     "name": "pepita"
-    #                 }
-    #             }
-    #         }
-    #     ]
-    #   } }
-    #
-    #   it { expect(result).to eq ms :Assignment, :otra_pepita, ms(:Reference, :pepita )}
-    #   it { check_valid result }
-    # end
-
   #   context 'instance variables references' do
   #     let(:code) { %q{@nigiri} }
   #     it { expect(result).to eq ms :Reference, :@nigiri }
@@ -1122,38 +1073,6 @@ describe Mulang::PHP do
   #     it { check_valid result }
   #   end
   #
-  #   context 'returns' do
-  #     let(:code) { %q{return 9} }
-  #     it { expect(result).to eq ms(:Return, ms(:MuNumber, 9)) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'or boolean expressions' do
-  #     let(:code) { %q{true || true} }
-  #     it { expect(result).to eq simple_send(ms(:MuBool, true), '||', [ms(:MuBool, true)]) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context '&& boolean expressions' do
-  #     let(:code) { %q{true && true} }
-  #     it { expect(result).to eq simple_send(ms(:MuBool, true), '&&', [ms(:MuBool, true)]) }
-  #   end
-  #
-  #   context '|| boolean expressions' do
-  #     let(:code) { %q{true or true} }
-  #     it { expect(result).to eq simple_send(ms(:MuBool, true), '||', [ms(:MuBool, true)]) }
-  #   end
-  #
-  #   context 'ints' do
-  #     let(:code) { %q{60} }
-  #     it { expect(result).to eq ms(:MuNumber, 60) }
-  #   end
-  #
-  #   context 'symbols' do
-  #     let(:code) { %q{:foo} }
-  #     it { expect(result).to eq ms(:MuSymbol, 'foo') }
-  #     it { check_valid result }
-  #   end
   #
   #   context 'interpolations' do
   #     let(:code) { %q{"foo #{@bar} - #{@baz}"} }
@@ -1165,124 +1084,13 @@ describe Mulang::PHP do
   #     it { check_valid result }
   #   end
   #
-  #   context 'regexps' do
-  #     let(:code) { %q{/foo.*/} }
-  #     it { expect(result).to eq simple_send(ms(:Reference, :Regexp), :new, [ms(:MuString, 'foo.*')]) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'doubles' do
-  #     let(:code) { %q{60.4} }
-  #     it { expect(result).to eq ms(:MuNumber, 60.4) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'implicit sends' do
-  #     let(:code) { %q{m 5} }
-  #     it { expect(result).to eq ms :Send, ms(:Self), ms(:Reference, :m), [ms(:MuNumber, 5)] }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'math expressions' do
-  #     let(:code) { %q{4 + 5} }
-  #     it { expect(result).to eq ms :Send, ms(:MuNumber, 4), ms(:Reference, :+), [ms(:MuNumber, 5)] }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'equal comparisons' do
-  #     let(:code) { %q{ 4 == 3 } }
-  #     it { expect(result).to eq ms :Send, ms(:MuNumber, 4), {tag: :Equal}, [ms(:MuNumber, 3)] }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'not equal comparisons' do
-  #     let(:code) { %q{ 4 != 3 } }
-  #     it { expect(result).to eq ms :Send, ms(:MuNumber, 4), {tag: :NotEqual}, [ms(:MuNumber, 3)] }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'true' do
-  #     let(:code) { %q{true} }
-  #     it { expect(result).to eq ms :MuBool, true }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'false' do
-  #     let(:code) { %q{false} }
-  #     it { expect(result).to eq ms :MuBool, false }
-  #     it { check_valid result }
-  #   end
-  #
-  #    context 'nil' do
-  #     let(:code) { %q{nil} }
-  #     it { expect(result).to eq ms :MuNil }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'lists' do
-  #     let(:code) { %q{[4, 5]} }
-  #     it { expect(result).to eq ms :MuList,  ms(:MuNumber, 4), ms(:MuNumber, 5) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'empty lists' do
-  #     let(:code) { %q{[]} }
-  #     it { expect(result).to eq tag: :MuList, contents: [] }
-  #     it { check_valid result }
-  #   end
-  #
-  #   describe 'lambdas' do
-  #     let(:list) { ms :MuList,  ms(:MuNumber, 4), ms(:MuNumber, 5) }
-  #     context 'map' do
-  #       let(:code) { %q{[4, 5].map { |x| x + 1 }} }
-  #       it { expect(result).to eq simple_send list, :map, [
-  #                                   ms(:Lambda,
-  #                                     [ms(:VariablePattern, :x)],
-  #                                     simple_send(ms(:Reference, :x), :+, [ms(:MuNumber, 1)]))] }
-  #       it { check_valid result }
-  #     end
-  #
-  #     context 'inject' do
-  #       let(:code) { %q{[4, 5].inject(0) { |x, y| x + y }} }
-  #       it { expect(result).to eq simple_send list, :inject, [
-  #                                   ms(:MuNumber, 0),
-  #                                   ms(:Lambda,
-  #                                     [ms(:VariablePattern, :x), ms(:VariablePattern, :y)],
-  #                                     simple_send(ms(:Reference, :x), :+, [ms(:Reference, :y)]))] }
-  #       it { check_valid result }
-  #     end
-  #   end
-  #
+
   #   context 'message sends' do
   #     let(:code) { %q{
   #       a = 2
   #       a + 6
   #     } }
   #     it { expect(result[:contents][1]).to eq simple_send(ms(:Reference, :a), :+, [ms(:MuNumber, 6)]) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'modules and variables' do
-  #     let(:code) { %q{
-  #       module Pepita
-  #       end
-  #       module Pepona
-  #       end
-  #       otra_pepita = Pepita
-  #       otra_pepona = Pepona
-  #     } }
-  #     it { expect(result[:tag]).to eq :Sequence }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'module with module' do
-  #     let(:code) { %q{
-  #       module Pepita
-  #         def self.canta
-  #         end
-  #       end
-  #     } }
-  #     it { expect(result).to eq ms(:Object, :Pepita, simple_method(:canta, [], ms(:MuNil))) }
   #     it { check_valid result }
   #   end
   #
@@ -1342,102 +1150,7 @@ describe Mulang::PHP do
   #   end
   #
   #
-  #
-  #   context 'module with if-else' do
-  #     let(:code) { %q{
-  #       module Pepita
-  #         def self.decidi!
-  #           if esta_bien?
-  #             hacelo!
-  #           else
-  #             no_lo_hagas!
-  #           end
-  #         end
-  #       end
-  #     } }
-  #     it { expect(result).to eq tag: :Object,
-  #                               contents: [
-  #                                 :Pepita,
-  #                                 simple_method(
-  #                                   :decidi!,
-  #                                   [],
-  #                                   { tag: :If,
-  #                                     contents: [
-  #                                       simple_send(
-  #                                         ms(:Self),
-  #                                         :esta_bien?,
-  #                                         []),
-  #                                       simple_send(
-  #                                         ms(:Self),
-  #                                         :hacelo!,
-  #                                         []),
-  #                                       simple_send(
-  #                                         ms(:Self),
-  #                                         :no_lo_hagas!,
-  #                                         [])
-  #                                     ]})
-  #                               ]}
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'module with if' do
-  #     let(:code) { %q{
-  #       module Pepita
-  #         def self.decidi!
-  #           if esta_bien?
-  #             hacelo!
-  #           end
-  #         end
-  #       end
-  #     } }
-  #     it { expect(result).to eq ms(:Object,
-  #                                 :Pepita,
-  #                                 simple_method(:decidi!, [],
-  #                                   ms(:If,
-  #                                     simple_send(ms(:Self), :esta_bien?, []),
-  #                                     simple_send(ms(:Self), :hacelo!, []),
-  #                                     ms(:MuNil)))) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'module with unless' do
-  #     let(:code) { %q{
-  #       module Pepita
-  #         def self.decidi!
-  #           unless esta_bien?
-  #             hacelo!
-  #           end
-  #         end
-  #       end
-  #     } }
-  #     it { expect(result).to eq ms(:Object,
-  #                                 :Pepita,
-  #                                 simple_method(:decidi!, [],
-  #                                   ms(:If,
-  #                                     simple_send(ms(:Self), :esta_bien?, []),
-  #                                     ms(:MuNil),
-  #                                     simple_send(ms(:Self),:hacelo!, [])))) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'module with suffix unless' do
-  #     let(:code) { %q{
-  #       module Pepita
-  #         def self.decidi!
-  #           hacelo! unless esta_bien?
-  #         end
-  #       end
-  #     } }
-  #     it { expect(result).to eq ms(:Object,
-  #                                 :Pepita,
-  #                                 simple_method(:decidi!, [],
-  #                                   ms(:If,
-  #                                     simple_send(ms(:Self), :esta_bien?, []),
-  #                                     ms(:MuNil),
-  #                                     simple_send(ms(:Self), :hacelo!, [])))) }
-  #   end
-  #
-  #   context 'simple class declararions' do
+  #   context 'simple class declarations' do
   #     let(:code) { %q{
   #       class Foo
   #       end
@@ -1480,16 +1193,6 @@ describe Mulang::PHP do
   #     it { check_valid result }
   #   end
   #
-  #   context 'mixins' do
-  #     let(:code) { %q{
-  #       class Foo
-  #         include Bar
-  #       end
-  #     } }
-  #     it { expect(result).to eq ms :Class, :Foo, nil, simple_send(ms(:Self), :include, [ms(:Reference, :Bar)]) }
-  #     it { check_valid result }
-  #   end
-  #
   #   context 'unsupported features' do
   #     let(:code) { %q{
   #       class << self
@@ -1497,49 +1200,6 @@ describe Mulang::PHP do
   #     } }
   #     it { expect(result).to eq ms :Other, "[s(:sclass,\n  s(:self), nil)]", nil }
   #     it { check_valid result }
-  #   end
-  #
-  #   context 'hashes' do
-  #     let(:code) { %q{{foo:3}} }
-  #     it { expect(result).to eq ms :Other, "[s(:hash,\n  s(:pair,\n    s(:sym, :foo),\n    s(:int, 3)))]", nil }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'creation' do
-  #     let(:code) { %q{Object.new} }
-  #     it { expect(result).to eq simple_send(ms(:Reference, :Object), :new, []) }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'ranges' do
-  #     let(:code) { %q{1..1024} }
-  #     it { expect(result).to eq ms :Other, "(irange\n  (int 1)\n  (int 1024))", nil }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'ranges with parenthesis and blocks' do
-  #     let(:code) { %q{l = (1..1024*1024*10).map { Object.new }} }
-  #     it { check_valid result }
-  #   end
-  #
-  #   context 'hash def' do
-  #     let(:code) { %q{def hash;end} }
-  #     it { expect(result).to eq mu_method :HashMethod, [], ms(:MuNil) }
-  #   end
-  #
-  #   context 'equal? def' do
-  #     let(:code) { %q{def equal?;end} }
-  #     it { expect(result).to eq mu_method :EqualMethod, [], ms(:MuNil) }
-  #   end
-  #
-  #   context 'eql? def' do
-  #     let(:code) { %q{def equal?;end} }
-  #     it { expect(result).to eq mu_method :EqualMethod, [], ms(:MuNil) }
-  #   end
-  #
-  #   context '== def' do
-  #     let(:code) { %q{def equal?;end} }
-  #     it { expect(result).to eq mu_method :EqualMethod, [], ms(:MuNil) }
   #   end
   #
   #   context 'rescue with no action' do
@@ -1682,48 +1342,6 @@ describe Mulang::PHP do
   #     it { expect(result).to eq try([ [ ms(:WildcardPattern),
   #                                       simple_send(ms(:Self), :baz, []) ] ],
   #                                   simple_send(ms(:Self), :foobar, [])) }
-  #   end
-  #
-  #   context 'op assignment -' do
-  #     let(:code) { 'a -= 3' }
-  #
-  #     it { check_valid result }
-  #     it { expect(result).to eq(Mulang::PHP.parse 'a = a - 3')}
-  #   end
-  #
-  #   context 'op assignment on local array var' do
-  #     let(:code) { 'a[1] += 3' }
-  #
-  #     it { check_valid result }
-  #     it { expect(result).to eq(Mulang::PHP.parse('a[1] = a[1] + 3'))}
-  #   end
-  #
-  #   context 'op assignment on instance array var' do
-  #     let(:code) { '@a[1] *= 3' }
-  #
-  #     it { check_valid result }
-  #     it { expect(result).to eq(Mulang::PHP.parse('@a[1] = @a[1] * 3'))}
-  #   end
-  #
-  #   context 'op assignment on local var with attribute accessor' do
-  #     let(:code) { 'a.b /= 3' }
-  #
-  #     it { check_valid result }
-  #     it { expect(result).to eq(Mulang::PHP.parse('a.b = a.b / 3'))}
-  #   end
-  #
-  #   context 'op assignment on instance var with attribute accessor' do
-  #     let(:code) { '@a.b ||= false' }
-  #
-  #     it { check_valid result }
-  #     it { expect(result).to eq(Mulang::PHP.parse('@a.b = @a.b || false'))}
-  #   end
-  #
-  #   context 'and assignment' do
-  #     let(:code) { 'a &&= false' }
-  #
-  #     it { check_valid result }
-  #     it { expect(result).to eq(Mulang::PHP.parse('a = a && false'))}
   #   end
 end
 
