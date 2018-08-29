@@ -12,7 +12,8 @@ RSpec.configure do |config|
 end
 
 def convert_php_to_mulang(ast)
-  mulang_ast = Mulang::PHP.parse JSON.parse(ast, symbolize_names: true)
+  json = JSON.parse ast, symbolize_names: true
+  mulang_ast = Mulang::PHP.parse json
   check_valid mulang_ast
   mulang_ast
 end

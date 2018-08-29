@@ -157,65 +157,114 @@ describe Mulang::PHP do
 
           it { expect(result).to eq ms :MuList, [] }
         end
+
+        context 'non-empty' do
+          ###
+          # [1, "dos", true];
+          ###
+          let(:ast) { %q{
+            [
+              {
+                "nodeType": "Stmt_Expression",
+                "expr": {
+                  "nodeType": "Expr_Array",
+                  "items": [
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": null,
+                      "value": {
+                        "nodeType": "Scalar_LNumber",
+                        "value": 1
+                      },
+                      "byRef": false
+                    },
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": null,
+                      "value": {
+                        "nodeType": "Scalar_String",
+                        "value": "dos"
+                      },
+                      "byRef": false
+                    },
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": null,
+                      "value": {
+                        "nodeType": "Expr_ConstFetch",
+                        "name": {
+                          "nodeType": "Name",
+                          "parts": [
+                            "true"
+                          ]
+                        }
+                      },
+                      "byRef": false
+                    }
+                  ]
+                }
+              }
+            ]
+          } }
+
+          it {
+            expect(result).to eq ms(
+                                     :MuList,
+                                     ms(:MuNumber, 1),
+                                     ms(:MuString, 'dos'),
+                                     ms(:MuBool, true)
+                                   )
+          }
+        end
       end
 
-      context 'non-empty' do
-        ###
-        # [1, "dos", true];
-        ###
-        let(:ast) { %q{
-          [
-            {
-              "nodeType": "Stmt_Expression",
-              "expr": {
-                "nodeType": "Expr_Array",
-                "items": [
-                  {
-                    "nodeType": "Expr_ArrayItem",
-                    "key": null,
-                    "value": {
-                      "nodeType": "Scalar_LNumber",
-                      "value": 1
+      context 'associative arrays' do
+        context 'more than one element' do
+          ###
+          # [ "foo" => "bar", "baz" => "faz" ];
+          ###
+          let(:ast) { %q{
+            [
+              {
+                "nodeType": "Stmt_Expression",
+                "expr": {
+                  "nodeType": "Expr_Array",
+                  "items": [
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": {
+                        "nodeType": "Scalar_String",
+                        "value": "foo"
+                      },
+                      "value": {
+                        "nodeType": "Scalar_String",
+                        "value": "bar"
+                      },
+                      "byRef": false
                     },
-                    "byRef": false
-                  },
-                  {
-                    "nodeType": "Expr_ArrayItem",
-                    "key": null,
-                    "value": {
-                      "nodeType": "Scalar_String",
-                      "value": "dos"
-                    },
-                    "byRef": false
-                  },
-                  {
-                    "nodeType": "Expr_ArrayItem",
-                    "key": null,
-                    "value": {
-                      "nodeType": "Expr_ConstFetch",
-                      "name": {
-                        "nodeType": "Name",
-                        "parts": [
-                          "true"
-                        ]
-                      }
-                    },
-                    "byRef": false
-                  }
-                ]
+                    {
+                      "nodeType": "Expr_ArrayItem",
+                      "key": {
+                        "nodeType": "Scalar_String",
+                        "value": "baz"
+                      },
+                      "value": {
+                        "nodeType": "Scalar_LNumber",
+                        "value": 5
+                      },
+                      "byRef": false
+                    }
+                  ]
+                }
               }
-            }
-          ]
-         } }
+            ]
+          } }
 
-        it {
-          expect(result).to eq ms(
-            :MuList,
-            ms(:MuNumber, 1),
-            ms(:MuString, 'dos'),
-            ms(:MuBool, true)
-          )
-        }
+          it { expect(result).to eq ms :MuObject, sequence(
+              ms(:Attribute, 'foo', ms(:MuString, 'bar')),
+              ms(:Attribute, 'baz', ms(:MuNumber, 5))
+          ) }
+        end
       end
     end
 

@@ -33,13 +33,10 @@ module Mulang::PHP
       ms :Assignment, node[:var][:name], process(node[:expr])
     end
 
-    def on_Scalar_LNumber(node)
-      ms :MuNumber, node[:value]
-    end
-
     def on_Scalar_DNumber(node)
       ms :MuNumber, node[:value]
     end
+    alias on_Scalar_LNumber on_Scalar_DNumber
 
     def on_Scalar_String(node)
       ms :MuString, node[:value]
@@ -63,11 +60,18 @@ module Mulang::PHP
     end
 
     def on_Expr_Array(node)
-      ms :MuList, process(node[:items])
+      items = node[:items]
+      is_array = items.all? { |it| it[:key].nil? }
+
+      is_array ? ms(:MuList, process(items))
+               : ms(:MuObject, sequence(*process(items)))
     end
 
     def on_Expr_ArrayItem(node)
-      process(node[:value])
+      value = process(node[:value])
+
+      node[:key] ? ms(:Attribute, node[:key][:value].to_s, value)
+                 : value
     end
 
     # def on_class(node)
