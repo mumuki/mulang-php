@@ -75,6 +75,52 @@ describe Mulang::PHP do
 
       it { expect(result).to eq simple_send(ms(:Reference, 'obje'), 'prop=', [ms(:MuString, 'value')]) }
     end
+
+    context 'method call' do
+      ###
+      # $obj->metodo(1, 2);
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Expression",
+            "expr": {
+              "nodeType": "Expr_MethodCall",
+              "var": {
+                "nodeType": "Expr_Variable",
+                "name": "obj"
+              },
+              "name": {
+                "nodeType": "Identifier",
+                "name": "metodo"
+              },
+              "args": [
+                {
+                  "nodeType": "Arg",
+                  "value": {
+                    "nodeType": "Scalar_LNumber",
+                    "value": 1
+                  },
+                  "byRef": false,
+                  "unpack": false
+                },
+                {
+                  "nodeType": "Arg",
+                  "value": {
+                    "nodeType": "Scalar_LNumber",
+                    "value": 2
+                  },
+                  "byRef": false,
+                  "unpack": false
+                }
+              ]
+            }
+          }
+        ]
+      } }
+
+      it { expect(result).to eq simple_send(ms(:Reference, 'obj'), 'metodo', [ms(:MuNumber, 1), ms(:MuNumber, 2)]) }
+    end
   end
 
   #   context 'message sends' do
