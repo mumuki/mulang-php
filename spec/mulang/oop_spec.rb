@@ -432,6 +432,67 @@ describe Mulang::PHP do
                              )
       }
     end
+
+    context 'interface' do
+      ###
+      # interface A extends C, D { public function getHtml($template); }
+      ###
+      let(:ast) { %q{
+        [
+          {
+            "nodeType": "Stmt_Interface",
+            "extends": [
+              {
+                "nodeType": "Name",
+                "parts": [
+                  "C"
+                ]
+              },
+              {
+                "nodeType": "Name",
+                "parts": [
+                  "D"
+                ]
+              }
+            ],
+            "name": {
+              "nodeType": "Identifier",
+              "name": "A"
+            },
+            "stmts": [
+              {
+                "nodeType": "Stmt_ClassMethod",
+                "flags": 1,
+                "byRef": false,
+                "name": {
+                  "nodeType": "Identifier",
+                  "name": "getHtml"
+                },
+                "params": [
+                  {
+                    "nodeType": "Param",
+                    "type": null,
+                    "byRef": false,
+                    "variadic": false,
+                    "var": {
+                      "nodeType": "Expr_Variable",
+                      "name": "template"
+                    },
+                    "default": null
+                  }
+                ],
+                "returnType": null,
+                "stmts": null
+              }
+            ]
+          }
+        ]
+      } }
+
+      xit { # // TODO: It isn't working. Check
+        expect(result).to eq '...'
+      }
+    end
   end
 
   #   context 'module with self methods' do

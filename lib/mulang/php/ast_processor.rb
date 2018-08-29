@@ -232,7 +232,6 @@ module Mulang::PHP
     end
 
     def on_Stmt_Class(node)
-      # TODO: Sacar el None y soportar herencia
       superclass = node.dig(:extends, :parts)&.first
       ms :Class, node[:name][:name], superclass, process_block(node[:stmts])
     end
@@ -243,111 +242,20 @@ module Mulang::PHP
     end
 
     def on_Stmt_ClassMethod(node)
-      simple_method node[:name][:name], process(node[:params]), process_block(node[:stmts])
+      name = node[:name][:name]
+      params = process(node[:params])
+
+      if node[:stmts].nil?
+        ms :TypeSignature, name, params
+      else
+        simple_method name, params, process_block(node[:stmts])
+      end
     end
 
-    # def on_class(node)
-    #   name, superclass, body = *node
-    #   body ||= s(:nil)
-    #
-    #   _, class_name = *name
-    #   _, superclass_name = *superclass
-    #
-    #   ms :Class, class_name, superclass_name, process(body)
-    # end
-
-    # def on_begin(node)
-    #   sequence(*process_all(node))
-    # end
-    #
-    # def on_rescue(node)
-    #   try, *catch, _ = *node
-    #   ms :Try, process(try), process_all(catch), ms(:MuNil)
-    # end
-    #
-    #
-    # def on_ensure(node)
-    #   catch, finally = *node
-    #   try, catches = on_rescue(catch)[:contents]
-    #   ms :Try, try, catches, process(finally)
-    # end
-    #
-    #
-    # def on_dstr(node)
-    #   parts = *node
-    #
-    #   simple_send ms(:MuList, process_all(parts)), :join, []
-    # end
-    #
-    #
-    # def on_defs(node)
-    #   _target, id, args, body = *node
-    #   body ||= s(:nil)
-    #
-    #   simple_method id, process_all(args), process(body)
-    # end
-    #
-    # def on_def(node)
-    #   id, args, body = *node
-    #   body ||= s(:nil)
-    #
-    #   simple_method id, process_all(args), process(body)
-    #   end
-    # end
-    #
-    # def on_send(node)
-    #   handle_send_with_args(node)
-    # end
-    #
-    # def on_op_asgn(node)
-    #   assignee, message, value = *node
-    #
-    #   if assignee.type == :send
-    #     property_assignment assignee, message, value
-    #   else
-    #     var_assignment assignee, message, value
-    #   end
-    # end
-    #
-    # def var_assignment(assignee, message, value)
-    #   id = assignee.to_a.first
-    #   ms :Assignment, id, simple_send(ms(:Reference, id), message, [process(value)])
-    # end
-    #
-    # def property_assignment(assignee, message, value)
-    #   receiver, accessor, *accessor_args = *assignee
-    #
-    #   reasign accessor, process_all(accessor_args), process(receiver), message, process(value)
-    # end
-    #
-    # def reasign(accessor, args, id, message, value)
-    #   simple_send id,
-    #               "#{accessor}=".to_sym,
-    #               args + [simple_send(
-    #                         simple_send(id, accessor, args),
-    #                         message,
-    #                         [value])]
-    # end
-    #
-    #
-    # def on_const(node)
-    #   _ns, value = *node
-    #   ms :Reference, value
-    # end
-    #
-    # def handler_missing(*args)
-    #   puts args
-    #   ms :Other, args.to_s, nil
-    # end
-    #
-    # def handle_send_with_args(node, extra_args=[])
-    #   receptor, message, *args = *node
-    #   receptor ||= s(:self)
-    #
-    #   message = {tag: :Reference, contents: message}
-    #
-    #   ms :Send, process(receptor), message, (process_all(args) + extra_args)
-    # end
+    def on_Stmt_Interface(node)
+      parents = node[:extends].map { |it| it[:parts].first }
+      ms :Interface, node[:name][:name], parents, process(node[:stmts])
+    end
 
     def method_missing(m, *args, &block)
       puts m, args
