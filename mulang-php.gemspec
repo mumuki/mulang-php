@@ -6,8 +6,8 @@ require 'mulang/php/version'
 Gem::Specification.new do |spec|
   spec.name          = "mulang-php"
   spec.version       = Mulang::PHP::VERSION
-  spec.authors       = ["Franco Leonardo Bulgarelli"]
-  spec.email         = ["franco@mumuki.org"]
+  spec.authors       = ["Rodrigo Alfonso", "Franco Leonardo Bulgarelli"]
+  spec.email         = ["rodri042@gmail.com", "franco@mumuki.org"]
 
   spec.summary       = "PHP integration for the Mulang Language Analyzer"
   spec.description   = "PHP - Mulang Parser"
