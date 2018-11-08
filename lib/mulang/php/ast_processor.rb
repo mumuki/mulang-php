@@ -102,7 +102,7 @@ module Mulang::PHP
         when 'false'
           ms :MuBool, false
         when 'null'
-          ms :None
+          ms :MuNil
         else
           ms :Reference, value
       end
