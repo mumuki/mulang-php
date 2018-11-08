@@ -102,7 +102,7 @@ module Mulang::PHP
         when 'false'
           ms :MuBool, false
         when 'null'
-          ms :None
+          ms :MuNil
         else
           ms :Reference, value
       end
@@ -134,11 +134,11 @@ module Mulang::PHP
     # OPERATORS
 
     def on_Expr_BinaryOp_Equal(node)
-      ms :Equal, [process(node[:left]), process(node[:right])]
+      ms :Application, [ms(:Equal), [process(node[:left]), process(node[:right])]]
     end
 
     def on_Expr_BinaryOp_NotEqual(node)
-      ms :NotEqual, [process(node[:left]), process(node[:right])]
+      ms :Application, [ms(:NotEqual), [process(node[:left]), process(node[:right])]]
     end
 
     def on_Expr_PostInc(node)
