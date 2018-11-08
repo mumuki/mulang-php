@@ -30,7 +30,7 @@ describe Mulang::PHP do
           ]
         } }
 
-        it { expect(result).to eq ms :Equal, ms(:MuString, 'h'), ms(:MuString, 'a') }
+        it { expect(result).to eq ms :Application, (ms :Equal), [ms(:MuString, 'h'), ms(:MuString, 'a')] }
       end
 
       context '!=' do
@@ -56,7 +56,7 @@ describe Mulang::PHP do
           ]
         } }
 
-        it { expect(result).to eq ms :NotEqual, ms(:MuString, 'h'), ms(:MuString, 'a') }
+        it { expect(result).to eq ms :Application, ms(:NotEqual), [ms(:MuString, 'h'), ms(:MuString, 'a')] }
       end
 
       context '+' do

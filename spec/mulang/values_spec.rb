@@ -126,7 +126,7 @@ describe Mulang::PHP do
           ]
         } }
 
-        it { expect(result).to eq ms :None }
+        it { expect(result).to eq ms :MuNil }
       end
 
       context 'arrays' do
