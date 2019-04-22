@@ -1,7 +1,7 @@
 sudo: false
 language: ruby
 rvm:
-- 2.3.1
+- 2.6.3
 before_install:
 - mkdir -p ~/.local/bin
 - export PATH=$HOME/.local/bin:$PATH
