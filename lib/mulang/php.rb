@@ -1,5 +1,4 @@
 require 'ast'
-require 'parser/current'
 require 'mumukit/core'
 
 require_relative "./php/version"
