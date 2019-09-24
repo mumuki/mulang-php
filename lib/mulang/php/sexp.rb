@@ -45,7 +45,7 @@ module Mulang::PHP
     end
 
     def binary_operator(operator, left, right)
-      application operator, [left, right]
+      ms :Application, [operator, [left, right]]
     end
 
     def simple_send(sender, message, args)

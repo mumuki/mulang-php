@@ -35,29 +35,30 @@ module Mulang::PHP
 
     def define_binary_operators!
       [
-        { token: '===', name: 'Identical', supports_assign?: false },
-        { token: '!==', name: 'NotIdentical', supports_assign?: false },
-        { token: '.', name: 'Concat', supports_assign?: true },
-        { token: '+', name: 'Plus', supports_assign?: true },
-        { token: '-', name: 'Minus', supports_assign?: true },
-        { token: '*', name: 'Mul', supports_assign?: true },
-        { token: '/', name: 'Div', supports_assign?: true },
-        { token: '%', name: 'Mod', supports_assign?: true },
-        { token: '**', name: 'Pow', supports_assign?: true },
-        { token: '>', name: 'Greater', supports_assign?: false },
-        { token: '<', name: 'Smaller', supports_assign?: false },
-        { token: '>=', name: 'GreaterOrEqual', supports_assign?: false },
-        { token: '<=', name: 'SmallerOrEqual', supports_assign?: false },
-        { token: '&', name: 'BitwiseAnd', supports_assign?: true },
-        { token: '|', name: 'BitwiseOr', supports_assign?: true },
-        { token: '&&', name: 'BooleanAnd', supports_assign?: false },
-        { token: '||', name: 'BooleanOr', supports_assign?: false },
-        { token: 'and', name: 'LogicalAnd', supports_assign?: false },
-        { token: 'or', name: 'LogicalOr', supports_assign?: false },
-        { token: 'xor', name: 'LogicalXOr', supports_assign?: false }
+        { token: '===', name: 'Identical',      supports_assign?: false },
+        { token: '!==', name: 'NotIdentical',   supports_assign?: false },
+        { token: '.',   name: 'Concat',         supports_assign?: true },
+        { token: '+',   name: 'Plus',           supports_assign?: true, primitive: 'Plus'                  },
+        { token: '-',   name: 'Minus',          supports_assign?: true, primitive: 'Mius'                  },
+        { token: '*',   name: 'Mul',            supports_assign?: true, primitive: 'Multiply'              },
+        { token: '/',   name: 'Div',            supports_assign?: true, primitive: 'Divide'                },
+        { token: '%',   name: 'Mod',            supports_assign?: true },
+        { token: '**',  name: 'Pow',            supports_assign?: true },
+        { token: '>',   name: 'Greater',        supports_assign?: false, primitive: 'GreatherThan'         },
+        { token: '<',   name: 'Smaller',        supports_assign?: false, primitive: 'LessThan'             },
+        { token: '>=',  name: 'GreaterOrEqual', supports_assign?: false, primitive: 'GreatherOrEqualThan'  },
+        { token: '<=',  name: 'SmallerOrEqual', supports_assign?: false, primitive: 'LessOrEqualThan'      },
+        { token: '&',   name: 'BitwiseAnd',     supports_assign?: true },
+        { token: '|',   name: 'BitwiseOr',      supports_assign?: true },
+        { token: '&&',  name: 'BooleanAnd',     supports_assign?: false, primitive: 'And'                  },
+        { token: '||',  name: 'BooleanOr',      supports_assign?: false, primitive: 'Or'                   },
+        { token: 'and', name: 'LogicalAnd',     supports_assign?: false, primitive: 'And'                  },
+        { token: 'or',  name: 'LogicalOr',      supports_assign?: false, primitive: 'Or'                   },
+        { token: 'xor', name: 'LogicalXOr',     supports_assign?: false }
       ].each { |it|
         self.class.redefine_method(:"on_Expr_BinaryOp_#{it[:name]}") { |node|
-          process_binary_operator it[:token], node
+          operator = it[:primitive] ? ms(:Primitive, it[:primitive]) : ms(:Reference, it[:token])
+          process_binary_operator operator, node
         }
 
         if it[:supports_assign?]
@@ -134,11 +135,11 @@ module Mulang::PHP
     # OPERATORS
 
     def on_Expr_BinaryOp_Equal(node)
-      ms :Application, [ms(:Equal), [process(node[:left]), process(node[:right])]]
+      ms :Application, [ms(:Primitive, :Equal), [process(node[:left]), process(node[:right])]]
     end
 
     def on_Expr_BinaryOp_NotEqual(node)
-      ms :Application, [ms(:NotEqual), [process(node[:left]), process(node[:right])]]
+      ms :Application, [ms(:Primitive, :NotEqual), [process(node[:left]), process(node[:right])]]
     end
 
     def on_Expr_PostInc(node)
