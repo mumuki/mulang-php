@@ -316,7 +316,7 @@ describe Mulang::PHP do
           expect(result).to eq ms(
                                    :ForLoop,
                                    ms(:Assignment, 'i', ms(:MuNumber, 1)),
-                                   ms(:Application, ms(:Primitive, :GreatherOrEqualThan), [ms(:Reference, 'i'), ms(:MuNumber, 10)]),
+                                   ms(:Application, ms(:Primitive, :LessOrEqualThan), [ms(:Reference, 'i'), ms(:MuNumber, 10)]),
                                    ms(:Application, ms(:Primitive, :Plus), [ms(:Reference, 'i'), ms(:MuNumber, 1)]),
                                    ms(:Print, ms(:Reference, 'i'))
                                )

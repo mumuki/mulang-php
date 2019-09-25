@@ -143,12 +143,12 @@ module Mulang::PHP
     end
 
     def on_Expr_PostInc(node)
-      binary_operator '+', process(node[:var]), ms(:MuNumber, 1)
+      binary_operator ms(:Primitive, :Plus), process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreInc on_Expr_PostInc
 
     def on_Expr_PostDec(node)
-      binary_operator '-', process(node[:var]), ms(:MuNumber, 1)
+      binary_operator ms(:Primitive, :Minus), process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreDec on_Expr_PostDec
 
