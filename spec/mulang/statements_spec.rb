@@ -102,7 +102,7 @@ describe Mulang::PHP do
         it {
           expect(result).to eq ms(
                                    :If,
-                                   ms(:Application, ms(:Equal), [ms(:MuNumber, 2), ms(:MuNumber, 3)]),
+                                   ms(:Application, ms(:Primitive, :Equal), [ms(:MuNumber, 2), ms(:MuNumber, 3)]),
                                    sequence(
                                        ms(:Print, ms(:MuString, 'Oh no!')),
                                        ms(:Print, ms(:MuString, 'Math is broken!')),
@@ -316,8 +316,8 @@ describe Mulang::PHP do
           expect(result).to eq ms(
                                    :ForLoop,
                                    ms(:Assignment, 'i', ms(:MuNumber, 1)),
-                                   ms(:Application, ms(:Reference, '<='), [ms(:Reference, 'i'), ms(:MuNumber, 10)]),
-                                   ms(:Application, ms(:Reference, '+'), [ms(:Reference, 'i'), ms(:MuNumber, 1)]),
+                                   ms(:Application, ms(:Primitive, :LessOrEqualThan), [ms(:Reference, 'i'), ms(:MuNumber, 10)]),
+                                   ms(:Application, ms(:Primitive, :Plus), [ms(:Reference, 'i'), ms(:MuNumber, 1)]),
                                    ms(:Print, ms(:Reference, 'i'))
                                )
         }
