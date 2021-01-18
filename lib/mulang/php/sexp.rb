@@ -10,6 +10,10 @@ module Mulang::PHP
       end
     end
 
+    def primitive(operator)
+      ms(:Primitive, operator)
+    end
+
     def ms(tag, *contents)
       if contents.empty?
         {tag: tag}
