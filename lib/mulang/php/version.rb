@@ -1,5 +1,5 @@
 module Mulang
   module PHP
-    VERSION = "0.2.0"
+    VERSION = "6.0.0"
   end
 end
