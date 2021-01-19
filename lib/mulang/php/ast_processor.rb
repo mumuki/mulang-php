@@ -62,14 +62,14 @@ module Mulang::PHP
 
         if it[:supports_assign?]
           self.class.redefine_method(:"on_Expr_AssignOp_#{it[:name]}") { |node|
-            binary_operator "#{it[:token]}=", process(node[:var]), process(node[:expr])
+            binary_application "#{it[:token]}=", process(node[:var]), process(node[:expr])
           }
         end
       }
     end
 
     def process_binary_operator(operator, node)
-      binary_operator operator, process(node[:left]), process(node[:right])
+      binary_application operator, process(node[:left]), process(node[:right])
     end
 
     # ---
@@ -134,20 +134,20 @@ module Mulang::PHP
     # OPERATORS
 
     def on_Expr_BinaryOp_Equal(node)
-      ms :Application, [ms(:Equal), [process(node[:left]), process(node[:right])]]
+      ms :Application, [primitive(:Equal), [process(node[:left]), process(node[:right])]]
     end
 
     def on_Expr_BinaryOp_NotEqual(node)
-      ms :Application, [ms(:NotEqual), [process(node[:left]), process(node[:right])]]
+      ms :Application, [primitive(:NotEqual), [process(node[:left]), process(node[:right])]]
     end
 
     def on_Expr_PostInc(node)
-      binary_operator '+', process(node[:var]), ms(:MuNumber, 1)
+      binary_application '+', process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreInc on_Expr_PostInc
 
     def on_Expr_PostDec(node)
-      binary_operator '-', process(node[:var]), ms(:MuNumber, 1)
+      binary_application '-', process(node[:var]), ms(:MuNumber, 1)
     end
     alias on_Expr_PreDec on_Expr_PostDec
 

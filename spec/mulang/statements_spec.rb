@@ -102,7 +102,7 @@ describe Mulang::PHP do
         it {
           expect(result).to eq ms(
                                    :If,
-                                   ms(:Application, ms(:Equal), [ms(:MuNumber, 2), ms(:MuNumber, 3)]),
+                                   ms(:Application, primitive(:Equal), [ms(:MuNumber, 2), ms(:MuNumber, 3)]),
                                    sequence(
                                        ms(:Print, ms(:MuString, 'Oh no!')),
                                        ms(:Print, ms(:MuString, 'Math is broken!')),
